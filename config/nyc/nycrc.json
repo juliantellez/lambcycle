@@ -1,0 +1,22 @@
+{
+    "reporter": [
+        "lcov",
+        "text",
+        "text-summary"
+    ],
+    "extension": [
+        ".ts"
+    ],
+    "exclude": [
+        "**/Interfaces",
+        "**/Constants",
+        "**/*.d.ts",
+        "**/*.test.ts",
+        "**/*.js"
+    ],
+    "statements": 100,
+    "branches": 100,
+    "functions": 100,
+    "lines": 100,
+    "check-coverage": true
+}

@@ -4,11 +4,13 @@
   "description": "A lambda middleware life-cycle",
   "main": "dist/main.js",
   "scripts": {
-    "fmt": "prettier --no-config --write './src/**/*.ts'",
+    "fmt": "prettier --config config/prettier/.prettierrc --write './src/**/*.ts'",
+    "lint": "tslint -p tsconfig.json -c config/tslint/tslint.json",
+    "lint:fix": "npm run lint -- --fix",
     "test": "mocha --opts config/mocha/mocha.opts",
     "test:watch": "npm run test -- --watch --watch-extensions ts",
     "test:coverage": "nyc npm run test",
-    "build": "rm -rf dist && tsc"
+    "build": "rm -rf dist && tsc --types"
   },
   "nyc": {
     "extends": "config/nyc/nycrc.json"
@@ -27,6 +29,7 @@
     "prettier": "^1.15.3",
     "ts-node": "^7.0.1",
     "tslint": "^5.12.0",
-    "tslint-eslint-rules": "^5.4.0"
+    "tslint-eslint-rules": "^5.4.0",
+    "typescript": "^3.2.2"
   }
 }
