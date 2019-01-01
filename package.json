@@ -6,7 +6,7 @@
   "license": "ISC",
   "main": "dist/main.js",
   "scripts": {
-    "fmt": "prettier --config config/prettier/.prettierrc --write './src/**/*.ts'",
+    "fmt": "prettier --config config/prettier/.prettierrc --write '**/*.ts'",
     "lint": "tslint -p tsconfig.json -c config/tslint/tslint.json",
     "lint:fix": "npm run lint -- --fix",
     "test": "mocha --opts config/mocha/mocha.opts",
