@@ -1,10 +1,17 @@
 {
   "name": "lambcycle",
   "version": "0.1.0",
-  "description": "a lambda middleware lifecycle",
-  "main": "index.js",
+  "description": "A lambda middleware life-cycle",
+  "main": "dist/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "fmt": "prettier --no-config --write './src/**/*.ts'",
+    "test": "mocha --opts config/mocha/mocha.opts",
+    "test:watch": "npm run test -- --watch --watch-extensions ts",
+    "test:coverage": "nyc npm run test",
+    "build": "rm -rf dist && tsc"
+  },
+  "nyc": {
+    "extends": "config/nyc/nycrc.json"
   },
   "author": "",
   "license": "ISC",

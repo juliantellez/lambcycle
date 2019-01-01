@@ -1,0 +1,52 @@
+{
+    "linterOptions": {
+        "exclude": [
+            "**/*.css.d.ts"
+        ]
+    },
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended",
+        "tslint-eslint-rules"
+    ],
+    "rules": {
+        "only-arrow-functions": false,
+        "no-angle-bracket-type-assertion": false,
+        "whitespace": false,
+        "arrow-parens": false,
+        "curly": false,
+        "eofline": true,
+        "forin": false,
+        "member-ordering": [true, {
+            "order": [
+                "public-instance-field",
+                "protected-instance-field",
+                "private-instance-field",
+                "public-static-field",
+                "protected-static-field",
+                "private-static-field",
+                "constructor",
+                "public-instance-method",
+                "protected-instance-method",
+                "private-instance-method",
+                "public-static-method",
+                "protected-static-method",
+                "private-static-method"
+            ]
+        }],
+        "indent": [true, "spaces", 2],
+        "member-access": [true, "check-accessor"],
+        "newline-before-return": true,
+        "no-conditional-assignment": false,
+        "no-console": [true, "log"],
+        "object-literal-sort-keys": false,
+        "ordered-imports": [true, {
+            "grouped-imports": true
+        }],
+        "trailing-comma": false,
+        "quotemark": [true, "single"],
+        "radix": false,
+        "typedef": [true, "call-signature"],
+        "typedef-whitespace": false
+    }
+}
