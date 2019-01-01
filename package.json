@@ -2,6 +2,8 @@
   "name": "lambcycle",
   "version": "0.1.0",
   "description": "A lambda middleware life-cycle",
+  "author": "",
+  "license": "ISC",
   "main": "dist/main.js",
   "scripts": {
     "fmt": "prettier --config config/prettier/.prettierrc --write './src/**/*.ts'",
@@ -10,19 +12,26 @@
     "test": "mocha --opts config/mocha/mocha.opts",
     "test:watch": "npm run test -- --watch --watch-extensions ts",
     "test:coverage": "nyc npm run test",
+    "test:bundlesize": "bundlesize",
     "build": "rm -rf dist && webpack --config config/webpack/webpack.config.ts"
   },
   "nyc": {
     "extends": "config/nyc/nycrc.json"
   },
-  "author": "",
-  "license": "ISC",
+  "bundlesize": [
+    {
+      "path": "./dist/main.js",
+      "maxSize": "3 kB",
+      "compression": "none"
+    }
+  ],
   "devDependencies": {
     "@types/aws-lambda": "^8.10.17",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.18",
     "aws-lambda": "^0.1.2",
+    "bundlesize": "^0.17.0",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0",
