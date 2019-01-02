@@ -14,33 +14,53 @@ const executeHandler = async (
         wrapper.response = response;
     };
 
-    const tryHandler = async () => {
-        try {
-            const response = await lambdaHandler(
-                wrapper.event,
-                wrapper.context
-            );
+    const createCallbackPromise = () => {
+        let handlerCallback: Callback;
+        const handlerPromise = new Promise(resolve => {
+            handlerCallback = (error, response) => {
+                if (error) {
+                    throw error;
+                } else {
+                    resolve(response);
+                }
+            };
+        });
 
-            addResponseToWrapper(response);
-        } catch (error) {
-            handleError(error);
-        }
+        return {
+            // @ts-ignore
+            handlerCallback,
+            handlerPromise
+        };
     };
 
-    const handlerCallback: Callback = (error, response) =>
-        error ? handleError(error) : addResponseToWrapper(response);
+    try {
+        const {
+            handlerCallback,
+            handlerPromise: callbackPromise
+        } = createCallbackPromise();
 
-    if (isAsync(lambdaHandler)) {
-        await tryHandler();
-    } else {
-        const handlerRef = lambdaHandler(
+        const responseReference = lambdaHandler(
             wrapper.event,
             wrapper.context,
             handlerCallback
         );
-        if (isPromise(handlerRef)) {
-            await tryHandler();
+
+        if (isPromise(responseReference) || isAsync(responseReference)) {
+            const response = await responseReference;
+
+            return addResponseToWrapper(response);
+        } else if (responseReference === void 0) {
+            // Assumes a callback was used
+            const response = await callbackPromise;
+
+            return addResponseToWrapper(response);
+        } else {
+            // call is synchronous
+
+            return addResponseToWrapper(responseReference);
         }
+    } catch (error) {
+        await handleError(error);
     }
 };
 

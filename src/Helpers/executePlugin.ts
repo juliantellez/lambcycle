@@ -10,7 +10,7 @@ const executePlugin = async (
     try {
         await plugin(wrapper, handleError);
     } catch (err) {
-        handleError(err);
+        await handleError(err);
     }
 };
 

@@ -1,5 +1,6 @@
-import IWrapper from './IWrapper';
 import { Callback } from 'aws-lambda';
+
+import IWrapper from './IWrapper';
 
 type IPluginHookFunction = (
     wrapper: IWrapper,
