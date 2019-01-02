@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - "node"
+cache: npm
+
+before_script:
+  - node --version
+  - npm i -g npm@5.7.1
+  - rm -rf ./node_modules
+  - npm ci
+
+script: gulp
