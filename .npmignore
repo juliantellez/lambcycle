@@ -1,0 +1,7 @@
+.nvmrc
+tsconfig.json
+.vscode
+/config
+/.nyc_output
+/coverage
+/src

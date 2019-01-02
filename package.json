@@ -21,7 +21,7 @@
   "bundlesize": [
     {
       "path": "./dist/main.js",
-      "maxSize": "3 kB",
+      "maxSize": "11 kB",
       "compression": "none"
     }
   ],
