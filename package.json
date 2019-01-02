@@ -14,6 +14,7 @@
     "test:watch": "npm run test -- --watch --watch-extensions ts",
     "test:coverage": "nyc npm run test",
     "test:bundlesize": "bundlesize",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "build": "rm -rf dist && webpack --config config/webpack/webpack.config.ts"
   },
   "nyc": {
@@ -34,6 +35,7 @@
     "aws-lambda": "^0.1.2",
     "bundlesize": "^0.17.0",
     "chai": "^4.2.0",
+    "coveralls": "^3.0.2",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0",
     "prettier": "^1.15.3",
