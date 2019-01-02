@@ -15,3 +15,6 @@ script:
   - npm run fmt
   - npm run lint
   - npm run test:coverage
+  - npm run build
+  - npm run test:bundlesize
+
