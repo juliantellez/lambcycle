@@ -160,7 +160,7 @@ describe('executeHandler', () => {
     });
 
     it('should handle errors asynchronously', async () => {
-        let handleErrorCalled: Boolean = false;
+        let handleErrorCalled: boolean = false;
         const error = customError('foo');
 
         const handleError: Callback = async err => {
@@ -179,6 +179,6 @@ describe('executeHandler', () => {
 
         await executeHandler(lambdaHandler, wrapper, handleError);
 
-        assert.isTrue(handleErrorCalled)
+        assert.isTrue(handleErrorCalled);
     });
 });

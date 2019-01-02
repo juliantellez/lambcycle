@@ -2,7 +2,6 @@ import { Callback } from 'aws-lambda';
 
 import ILambdaHandler from '../Interfaces/ILambdaHandler';
 import IWrapper from '../Interfaces/IWrapper';
-import isAsync from '../Utils/isAsync';
 import isPromise from '../Utils/isPromise';
 
 const executeHandler = async (
@@ -45,7 +44,7 @@ const executeHandler = async (
             handlerCallback
         );
 
-        if (isPromise(responseReference) || isAsync(responseReference)) {
+        if (isPromise(responseReference)) {
             const response = await responseReference;
 
             return addResponseToWrapper(response);
