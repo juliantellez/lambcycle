@@ -1,12 +1,12 @@
-import IPluginFunction from './IPluginFunction';
+import IPluginHookFunction from './IPluginHookFunction';
 
 interface IPlugin {
-    onRequest?: IPluginFunction;
-    onAuth?: IPluginFunction;
-    onPreHandler?: IPluginFunction;
-    onPostHandler?: IPluginFunction;
-    onPreResponse?: IPluginFunction;
-    onError?: IPluginFunction;
+    onRequest?: IPluginHookFunction;
+    onAuth?: IPluginHookFunction;
+    onPreHandler?: IPluginHookFunction;
+    onPostHandler?: IPluginHookFunction;
+    onPreResponse?: IPluginHookFunction;
+    onError?: IPluginHookFunction;
 }
 
 export default IPlugin;
