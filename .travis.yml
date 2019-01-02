@@ -1,12 +1,16 @@
 language: node_js
 node_js:
-  - "node"
+  - 10
 cache: npm
 
 before_script:
   - node --version
+  - nvm use
   - npm i -g npm@5.7.1
   - rm -rf ./node_modules
   - npm ci
 
-script: gulp
+script:
+  - npm run fmt
+  - npm run lint
+  - npm run test:coverage

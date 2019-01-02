@@ -1,12 +1,13 @@
 {
   "name": "lambcycle",
   "version": "0.1.0",
-  "description": "A lambda middleware life-cycle",
+  "description": "A declarative lambda middleware with life cycle hooks.",
   "author": "",
   "license": "ISC",
   "main": "dist/main.js",
   "scripts": {
-    "fmt": "prettier --config config/prettier/.prettierrc --write '**/*.ts'",
+    "fmt": "prettier --config config/prettier/.prettierrc '**/*.ts' -l",
+    "fmt:fix": "npm run fmt -- --write",
     "lint": "tslint -p tsconfig.json -c config/tslint/tslint.json",
     "lint:fix": "npm run lint -- --fix",
     "test": "mocha --opts config/mocha/mocha.opts",
