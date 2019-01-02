@@ -1,0 +1,20 @@
+language: node_js
+node_js:
+  - node
+cache: npm
+
+before_script:
+  - node --version
+  - nvm install v10.0.0
+  - nvm use
+  - npm i -g npm@5.7.1
+  - rm -rf ./node_modules
+  - npm ci
+
+script:
+  - npm run fmt
+  - npm run lint
+  - npm run test:coverage
+  - npm run build
+  - npm run test:bundlesize
+
