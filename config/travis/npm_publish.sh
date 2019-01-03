@@ -3,21 +3,16 @@
 ##
 # See https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
 #
-# - Checks current branch is master
-# - Creates semver based on commit message
-# - npm version
-# - updates repo
-# - npm publish
+# Steps:
+# - Check current branch is master
+# - Create semver based on commit message
+# - Npm version
+# - Npm publish
 ##
 
-echo "TRAVIS_COMMIT_MESSAGE: $TRAVIS_COMMIT_MESSAGE"
-echo "TRAVIS_PULL_REQUEST_BRANCH: $TRAVIS_PULL_REQUEST_BRANCH"
-echo "TRAVIS_BRANCH: $TRAVIS_BRANCH"
-
 GIT_COMMIT_MESSAGE=$(git log --oneline --format=%B -n 1 HEAD | head -n 1)
-echo "GIT_COMMIT_MESSAGE: $GIT_COMMIT_MESSAGE"
 
-COMMIT_MESSAGE=$($TRAVIS_COMMIT_MESSAGE | head -n 1)
+COMMIT_MESSAGE=$GIT_COMMIT_MESSAGE
 CURRENT_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH
 
 # CHECK CURRENT BRANCH
