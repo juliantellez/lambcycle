@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-NPM_TOKEN =$1
+NPM_TOKEN=$1
 
 if [ -z "${NPM_TOKEN}" ]; then
     echo "ERROR: No NPM_TOKEN detected."
@@ -8,3 +8,5 @@ if [ -z "${NPM_TOKEN}" ]; then
 fi
 
 echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+
+echo "LOG: npm config has been setup"
