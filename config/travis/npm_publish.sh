@@ -24,16 +24,6 @@ fi
 echo "CURRENT_BRANCH: $CURRENT_BRANCH"
 echo "COMMIT_MESSAGE: $COMMIT_MESSAGE"
 
-git config --global -l
-
-git pull
-
-echo "test" > testfile
-git add testfile
-git commit -m "remote pushig"
-
-git push origin $CURRENT_BRANCH --no-verify
-
 if [ "$CURRENT_BRANCH" != "master" ] ; then
     echo "LOG: skipping npm publish for branch: ${CURRENT_BRANCH}"
     exit 0

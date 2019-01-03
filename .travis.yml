@@ -6,17 +6,15 @@ node_js:
 cache: npm
 
 before_install:
-  - cp ./config/travis/id_rsa.enc id_rsa.enc
-  - openssl aes-256-cbc -K $encrypted_211c569d59a1_key -iv $encrypted_211c569d59a1_iv -in id_rsa.enc -out ~/.ssh/id_rsa -d
-  - rm -f id_rsa.enc
+  - openssl aes-256-cbc -K $encrypted_211c569d59a1_key -iv $encrypted_211c569d59a1_iv -in ./config/travis/id_rsa.enc -out ~/.ssh/id_rsa -d
 
-# script:
-#   - npm run fmt
-#   - npm run lint
-#   - npm run test:coverage
-#   - npm run coveralls
-#   - npm run build
-#   - npm run test:bundlesize
+script:
+  - npm run fmt
+  - npm run lint
+  - npm run test:coverage
+  - npm run coveralls
+  - npm run build
+  - npm run test:bundlesize
 
 after_script:
   - sh ./config/travis/github_setup.sh $GITHUB_TOKEN
