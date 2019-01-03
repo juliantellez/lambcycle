@@ -22,8 +22,8 @@ cache: npm
 #   - npm run test:bundlesize
 
 after_script:
-  - ./travis/github_setup.sh
-  - ./travis/npm_setup.sh
+  - sh ./config/travis/github_setup.sh $GITHUB_TOKEN
+  - sh ./config/travis/npm_setup.sh $NPM_TOKEN
   # - CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
   # - COMMIT_MESSAGE=$(git log --oneline --format=%B -n 1 HEAD | head -n 1)
   # - ./travis/npm_publish.sh $CURRENT_BRANCH $COMMIT_MESSAGE

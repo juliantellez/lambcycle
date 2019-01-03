@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+NPM_TOKEN =$1
+
 if [ -z "${NPM_TOKEN}" ]; then
     echo "ERROR: No NPM_TOKEN detected."
     exit 1
