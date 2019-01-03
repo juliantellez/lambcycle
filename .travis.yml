@@ -5,6 +5,10 @@ node_js:
   - node
 cache: npm
 
+before_install:
+  - openssl aes-256-cbc -K $encrypted_211c569d59a1_key -iv $encrypted_211c569d59a1_iv -in ./config/travis/id_rsa.enc -out ~\/.ssh/id_rsa -d
+  - ls ~/.ssh
+
 # script:
 #   - npm run fmt
 #   - npm run lint
