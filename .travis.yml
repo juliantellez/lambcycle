@@ -20,3 +20,8 @@ after_script:
   - sh ./config/travis/github_setup.sh $GITHUB_TOKEN
   - sh ./config/travis/npm_setup.sh $NPM_TOKEN
   - sh ./config/travis/npm_publish.sh
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
