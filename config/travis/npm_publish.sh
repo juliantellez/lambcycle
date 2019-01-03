@@ -31,7 +31,7 @@ if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ] ; then
     echo "[ LOG ] git commit:"
     git commit --allow-empty -m 'travis: test clone push'
     echo "[ LOG ] git push:"
-    git push origin HEAD --no-verify
+    git push origin $CURRENT_BRANCH:refs/heads/$CURRENT_BRANCH
 fi
 
 if [ "$CURRENT_BRANCH" != "master" ] ; then
