@@ -24,6 +24,13 @@ fi
 echo "CURRENT_BRANCH: $CURRENT_BRANCH"
 echo "COMMIT_MESSAGE: $COMMIT_MESSAGE"
 
+# ensure you are not in a detached HEAD
+if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ] ; then
+    echo "LOG: checking out master"
+    git checkout master
+    git pull
+fi
+
 if [ "$CURRENT_BRANCH" != "master" ] ; then
     echo "LOG: skipping npm publish for branch: ${CURRENT_BRANCH}"
     exit 0
