@@ -26,8 +26,9 @@ echo "COMMIT_MESSAGE: $COMMIT_MESSAGE"
 
 # ensure you are not in a detached HEAD
 if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ] ; then
+    echo "LOG: fetching"
+    git fetch --unshallow --all
     echo "LOG: checking out master"
-    git fetch
     git checkout master
     git pull
 fi
