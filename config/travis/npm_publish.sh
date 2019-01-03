@@ -24,6 +24,10 @@ fi
 echo "CURRENT_BRANCH: $CURRENT_BRANCH"
 echo "COMMIT_MESSAGE: $COMMIT_MESSAGE"
 
+git config --global -l
+
+git pull
+
 echo "test" > testfile
 git add testfile
 
