@@ -21,18 +21,21 @@ then
   CURRENT_BRANCH=$TRAVIS_BRANCH
 fi
 
-echo "CURRENT_BRANCH: $CURRENT_BRANCH"
-echo "COMMIT_MESSAGE: $COMMIT_MESSAGE"
+echo "[ LOG ] CURRENT_BRANCH: $CURRENT_BRANCH"
+echo "[ LOG ] COMMIT_MESSAGE: $COMMIT_MESSAGE"
 
 # ensure you are not in a detached HEAD
 if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ] ; then
-    git fetch -p origin
+    echo "[ LOG ] git status:"
+    git status
+    echo "[ LOG ] git commit:"
     git commit --allow-empty -m 'travis: test clone push'
+    echo "[ LOG ] git push:"
     git push origin HEAD --no-verify
 fi
 
 if [ "$CURRENT_BRANCH" != "master" ] ; then
-    echo "LOG: skipping npm publish for branch: ${CURRENT_BRANCH}"
+    echo "[ LOG ] skipping npm publish for branch: ${CURRENT_BRANCH}"
     exit 0
 fi
 
@@ -45,7 +48,7 @@ if [ $SEMVER ]; then
 fi
 
 # VERSION
-echo "LOG: Npm Release : ${RELEASE_VERSION}"
+echo "[ LOG ] Npm Release : ${RELEASE_VERSION}"
 npm version $RELEASE_VERSION -m "[ci skip] Update package to v%s"
 
 git push origin HEAD --no-verify
