@@ -5,13 +5,8 @@ node_js:
   - node
 cache: npm
 
-before_script:
-  - node --version
-  - nvm install v10.0.0
-  - nvm use
-  - npm i -g npm@5.7.1
-  - rm -rf ./node_modules
-  - npm ci
+before_install:
+  - openssl aes-256-cbc -K $encrypted_211c569d59a1_key -iv $encrypted_211c569d59a1_iv -in ./config/travis/id_rsa.enc -out ~/.ssh/id_rsa -d
 
 script:
   - npm run fmt

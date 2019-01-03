@@ -4,11 +4,13 @@ const ENTRY_FILE = path.resolve(__dirname, '../../src/main.ts');
 const OUTPUT_DIR = path.resolve(__dirname, '../../dist');
 
 const webpackConfig = {
+    target: 'node',
     mode: 'production',
     entry: ENTRY_FILE,
     output: {
         path: OUTPUT_DIR,
-        filename: '[name].js'
+        filename: '[name].js',
+        libraryTarget: 'umd'
     },
     devtool: 'source-map',
     resolve: {
@@ -17,7 +19,7 @@ const webpackConfig = {
     module: {
         rules: [
             {
-                test: /\.(ts)?$/,
+                test: /\.ts$/,
                 exclude: /node_modules/,
                 loader: 'ts-loader'
             }

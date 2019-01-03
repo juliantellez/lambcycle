@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 
-GITHUB_TOKEN=$1
-
-if [ -z "${GITHUB_TOKEN}" ]; then
-    echo "ERROR: No GITHUB_TOKEN detected."
+if [ ! -f ~/.ssh/id_rsa ]; then
+    echo "ERROR: No ID_RSA file detected."
     exit 1
 fi
 
-git config --global url.https://${GITHUB_TOKEN}@github.com/.insteadOf ssh://git@github.com/
-git config --global push.default simple
-git config --global user.email "bot@dlabmcycle.com"
-git config --global user.name "[ LAMBCYCLE BOT ]"
+chmod 0600  ~/.ssh/id_rsa
 
-echo "LOG: git config has been setup"
+# Accept github domain
+touch ~/.ssh/known_hosts
+ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+# Global configuration
+git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+
+git config --global push.default simple
+git config --global user.email "bot.travis@lambcycle.org"
+git config --global user.name "[ TRAVIS-BOT ]"

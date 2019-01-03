@@ -1,9 +1,13 @@
 {
   "name": "lambcycle",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "license": "MIT",
+  "author": "Julian Tellez",
   "description": "A declarative lambda middleware with life cycle hooks.",
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juliantellez/lambcycle"
+  },
   "main": "dist/main.js",
   "scripts": {
     "fmt": "prettier --config config/prettier/.prettierrc '**/*.ts' -l",
@@ -46,5 +50,12 @@
     "typescript": "^3.2.2",
     "webpack": "^4.28.3",
     "webpack-cli": "^3.2.0"
-  }
+  },
+  "keywords": [
+    "lambda",
+    "aws-lambda",
+    "lambda-function",
+    "serverless",
+    "middleware"
+  ]
 }
