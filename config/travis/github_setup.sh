@@ -12,4 +12,11 @@ git config --global push.default simple
 git config --global user.email "bot@dlabmcycle.com"
 git config --global user.name "[ LAMBCYCLE BOT ]"
 
+echo "global"
+git config --global -l
+
+echo "\n local"
+git config -l
+
+git pull
 echo "LOG: git config has been setup"
