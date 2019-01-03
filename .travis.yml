@@ -6,6 +6,8 @@ node_js:
 cache: npm
 
 before_install:
+  - ls
+  - pwd
   - cp ./config/id_rsa.enc id_rsa.enc
   - openssl aes-256-cbc -K $encrypted_211c569d59a1_key -iv $encrypted_211c569d59a1_iv -in id_rsa.enc -out ~\/.ssh/id_rsa -d
   - rm -f id_rsa.enc
