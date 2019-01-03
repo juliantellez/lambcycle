@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://reacttraining.com/react-router/">
+  <a href="https://github.com/juliantellez/lambcycle">
     <img alt="lambcycle" src="https://raw.githubusercontent.com/juliantellez/lambcycle/master/assets/lambcycle-logo.svg?sanitize=true" width="144">
   </a>
 </p>
@@ -17,7 +17,7 @@
 </a>
 
 <!---npm downloads--->
-<a href="https://npmcharts.com/compare/webpack?minimal=true">
+<a href="https://npmcharts.com/compare/lambcycle?minimal=true">
     <img src="https://img.shields.io/npm/dm/lambcycle.svg?style=flat-square" style="padding:3px">
 </a>
 
