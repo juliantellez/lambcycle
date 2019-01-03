@@ -14,7 +14,7 @@
     "fmt:fix": "npm run fmt -- --write",
     "lint": "tslint -p tsconfig.json -c config/tslint/tslint.json",
     "lint:fix": "npm run lint -- --fix",
-    "test": "echo skip",
+    "test": "mocha --opts config/mocha/mocha.opts",
     "test:watch": "npm run test -- --watch --watch-extensions ts",
     "test:coverage": "nyc npm run test",
     "test:bundlesize": "bundlesize",
