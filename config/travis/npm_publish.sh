@@ -26,6 +26,7 @@ echo "COMMIT_MESSAGE: $COMMIT_MESSAGE"
 
 # ensure you are not in a detached HEAD
 if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ] ; then
+    git fetch -p origin
     git commit --allow-empty -m 'travis: test clone push'
     git push origin HEAD --no-verify
 fi
