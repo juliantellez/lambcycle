@@ -24,6 +24,4 @@ script:
 after_script:
   - sh ./config/travis/github_setup.sh $GITHUB_TOKEN
   - sh ./config/travis/npm_setup.sh $NPM_TOKEN
-  - CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-  - COMMIT_MESSAGE=$(git log --oneline --format=%B -n 1 HEAD | head -n 1)
-  - sh ./config/travis/npm_publish.sh $CURRENT_BRANCH $COMMIT_MESSAGE
+  - sh ./config/travis/npm_publish.sh

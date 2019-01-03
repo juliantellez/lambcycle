@@ -1,7 +1,25 @@
 #!/usr/bin/env bash
 
-CURRENT_BRANCH=$1 # git rev-parse --abbrev-ref HEAD
-COMMIT_MESSAGE=$2 # git log --oneline --format=%B -n 1 HEAD | head -n 1
+#
+# see https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
+#
+#
+
+echo "TRAVIS_COMMIT_MESSAGE: $TRAVIS_COMMIT_MESSAGE"
+echo "TRAVIS_PULL_REQUEST_BRANCH: $TRAVIS_PULL_REQUEST_BRANCH"
+echo "TRAVIS_BRANCH: $TRAVIS_BRANCH"
+
+COMMIT_MESSAGE=$($TRAVIS_COMMIT_MESSAGE | head -n 1)
+CURRENT_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH
+
+# CHECK CURRENT BRANCH
+if [ -z "$CURRENT_BRANCH" ]
+then
+  CURRENT_BRANCH=$TRAVIS_BRANCH
+fi
+
+echo "CURRENT_BRANCH: $CURRENT_BRANCH"
+echo "COMMIT_MESSAGE: $COMMIT_MESSAGE"
 
 if [ "$CURRENT_BRANCH" != "master" ] ; then
     echo "LOG: skipping npm publish for branch: ${CURRENT_BRANCH}"
