@@ -9,6 +9,7 @@
 # - Npm version
 # - Npm publish
 ##
+set -euxo pipefail
 
 GIT_COMMIT_MESSAGE=$(git log --oneline --format=%B -n 1 HEAD | head -n 1)
 
@@ -27,6 +28,7 @@ echo "COMMIT_MESSAGE: $COMMIT_MESSAGE"
 # ensure you are not in a detached HEAD
 if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ] ; then
     echo "LOG: checking out master"
+    git fetch
     git checkout master
     git pull
 fi
