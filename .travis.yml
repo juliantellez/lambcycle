@@ -1,3 +1,5 @@
+# see https://docs.travis-ci.com/user/job-lifecycle/#the-job-lifecycle
+
 language: node_js
 node_js:
   - node
@@ -18,3 +20,8 @@ script:
   - npm run coveralls
   - npm run build
   - npm run test:bundlesize
+
+after_script:
+  - sh ./config/travis/github_setup.sh $GITHUB_TOKEN
+  - sh ./config/travis/npm_setup.sh $NPM_TOKEN
+  - sh ./config/travis/npm_publish.sh
