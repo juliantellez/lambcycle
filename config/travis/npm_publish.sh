@@ -9,7 +9,6 @@
 # - Npm version
 # - Npm publish
 ##
-set -euxo pipefail
 
 GIT_COMMIT_MESSAGE=$(git log --oneline --format=%B -n 1 HEAD | head -n 1)
 
