@@ -18,4 +18,3 @@ script:
   - npm run coveralls
   - npm run build
   - npm run test:bundlesize
-
