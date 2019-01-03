@@ -26,11 +26,9 @@ echo "COMMIT_MESSAGE: $COMMIT_MESSAGE"
 
 # ensure you are not in a detached HEAD
 if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ] ; then
-    echo "LOG: fetching"
-    git fetch --all
-    echo "LOG: checking out master"
-    git checkout master
-    git pull
+    git fetch -p origin
+    git commit --allow-empty -m 'travis: test clone push'
+    git push origin HEAD --no-verify
 fi
 
 if [ "$CURRENT_BRANCH" != "master" ] ; then
@@ -50,7 +48,7 @@ fi
 echo "LOG: Npm Release : ${RELEASE_VERSION}"
 npm version $RELEASE_VERSION -m "[ci skip] Update package to v%s"
 
-git push origin master --no-verify
+git push origin HEAD --no-verify
 git push origin --tags --no-verify
 
 # PUBLISH
