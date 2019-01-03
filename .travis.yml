@@ -1,20 +1,29 @@
+# see https://docs.travis-ci.com/user/job-lifecycle/#the-job-lifecycle
+
 language: node_js
 node_js:
   - node
 cache: npm
 
-before_script:
-  - node --version
-  - nvm install v10.0.0
-  - nvm use
-  - npm i -g npm@5.7.1
-  - rm -rf ./node_modules
-  - npm ci
+# before_script:
+#   - node --version
+#   - nvm install v10.0.0
+#   - nvm use
+#   - npm i -g npm@5.7.1
+#   - rm -rf ./node_modules
+#   - npm ci
 
-script:
-  - npm run fmt
-  - npm run lint
-  - npm run test:coverage
-  - npm run coveralls
-  - npm run build
-  - npm run test:bundlesize
+# script:
+#   - npm run fmt
+#   - npm run lint
+#   - npm run test:coverage
+#   - npm run coveralls
+#   - npm run build
+#   - npm run test:bundlesize
+
+after_script:
+  - ./travis/github_setup.sh
+  - ./travis/npm_setup.sh
+  # - CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+  # - COMMIT_MESSAGE=$(git log --oneline --format=%B -n 1 HEAD | head -n 1)
+  # - ./travis/npm_publish.sh $CURRENT_BRANCH $COMMIT_MESSAGE
