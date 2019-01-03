@@ -9,7 +9,7 @@ fi
 
 git config --global url.https://${GITHUB_TOKEN}@github.com/.insteadOf ssh://git@github.com/
 git config --global push.default simple
-git config --global user.email "bot@dlabmcycle.org"
-git config --global user.name "[ LAMBCYCLE BOT ]"
+git config --global user.email "juliantellezmendez@gmail.com"
+git config --global user.name "juliantellez"
 
 echo "LOG: git config has been setup"

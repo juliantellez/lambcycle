@@ -30,6 +30,7 @@ git pull
 
 echo "test" > testfile
 git add testfile
+git commit -m "remote pushig"
 
 git push origin $CURRENT_BRANCH --no-verify
 
@@ -46,12 +47,12 @@ if [ $SEMVER ]; then
     RELEASE_VERSION=patch
 fi
 
-# # VERSION
-# echo "LOG: Npm Release : ${RELEASE_VERSION}"
-# npm version $RELEASE_VERSION -m "[ci skip] Update package to v%s"
+# VERSION
+echo "LOG: Npm Release : ${RELEASE_VERSION}"
+npm version $RELEASE_VERSION -m "[ci skip] Update package to v%s"
 
-# git push origin master --no-verify
-# git push origin --tags --no-verify
+git push origin master --no-verify
+git push origin --tags --no-verify
 
 # PUBLISH
-# npm publish
+npm publish
