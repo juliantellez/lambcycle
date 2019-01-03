@@ -20,5 +20,5 @@
 <!-- List all the information that needs to be added to the documentation after merge -->
 <!-- When your changes are merged you will be asked to contribute this to the documentation -->
 
-<img src="https://user-images.githubusercontent.com/4896851/50581173-1344ec00-0e4f-11e9-9cdc-0842e889778c.png" height="200">
+<img src="https://raw.githubusercontent.com/juliantellez/lambcycle/master/assets/lambcycle-logo.svg?sanitize=true" height="200">
 @juliantellez

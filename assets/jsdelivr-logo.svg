@@ -1,0 +1,11 @@
+<svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+    <g>
+        <polygon points="24.4,5 20.7,18.2 20.7,18.4 20.7,31.6 24.4,45 24.4,45 28.3,31.6 28.3,18.4 28.3,18.2 24.4,5"></polygon>
+        <g>
+            <g>
+                <polyline points="24.4,5 6,11.7 8.6,36.2 24.4,45"></polyline>
+                <polyline points="24.4,45 40.4,36.2 43.3,11.6 24.4,5"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>
