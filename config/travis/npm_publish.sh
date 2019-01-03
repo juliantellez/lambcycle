@@ -24,6 +24,11 @@ fi
 echo "CURRENT_BRANCH: $CURRENT_BRANCH"
 echo "COMMIT_MESSAGE: $COMMIT_MESSAGE"
 
+echo "test" > testfile
+git add testfile
+
+git push origin $CURRENT_BRANCH --no-verify
+
 if [ "$CURRENT_BRANCH" != "master" ] ; then
     echo "LOG: skipping npm publish for branch: ${CURRENT_BRANCH}"
     exit 0
@@ -43,11 +48,6 @@ fi
 
 # git push origin master --no-verify
 # git push origin --tags --no-verify
-
-echo "test" > testfile
-git add testfile
-
-git push origin $CURRENT_BRANCH --no-verify
 
 # PUBLISH
 # npm publish
