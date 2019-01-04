@@ -12,11 +12,11 @@ import ILifeCyclePlugins from './Interfaces/ILifeCyclePlugins';
 import IPluginHookFunction from './Interfaces/IPluginHookFunction';
 import IPluginManifest from './Interfaces/IPluginManifest';
 import IWrapper from './Interfaces/IWrapper';
+import createError from './Utils/createError'
+import ErrorTypes from './Constants/ErrorTypes';
 
 const preHandlerHookList = Object['values'](PreHandlerLifeCycleHooks);
 const postHandlerHookList = Object['values'](PostHandlerLifeCycleHooks);
-
-const createError = (error: string) => new Error(error);
 
 const middleware = (lambdaHandler: ILambdaHandler) => {
     const plugins: ILifeCyclePlugins = {
@@ -28,13 +28,24 @@ const middleware = (lambdaHandler: ILambdaHandler) => {
         onError: []
     };
 
-    const register = (pluginsManifest: IPluginManifest[]): IWrapper => {
+    const register = (pluginsManifest?: IPluginManifest[]): IWrapper => {
         if (!pluginsManifest || !pluginsManifest.length) {
-            throw createError('no plugins have been supplied to the register');
+            throw createError({
+                type: ErrorTypes.REGISTER_NO_PLUGINS_PRESENT,
+            });
         }
 
         pluginsManifest.forEach(pluginManifest => {
+            const plugin = Object.keys(pluginManifest.plugin)
+
+            if (!plugin || !plugin.length) {
+                throw createError({
+                    type: ErrorTypes.REGISTER_PLUGIN_DOES_NOT_HAVE_HOOKS,
+                });
+            }
+
             Object.keys(pluginManifest.plugin).forEach(key => {
+
                 if (Object['values'](PluginLifeCycleHooks).includes(key)) {
                     const currentPlugin = pluginManifest.plugin[key];
                     const { config: pluginConfig } = pluginManifest;
@@ -53,9 +64,13 @@ const middleware = (lambdaHandler: ILambdaHandler) => {
 
                     plugins[key].push(lifeCycleMethod);
                 } else {
-                    throw createError(
-                        `${key} is not a valid hook. see PluginLifeCycleHooks`
-                    );
+                    throw createError({
+                        type: ErrorTypes.REGISTER_PLUGIN_HOOK_IS_INVALID,
+                        details: [
+                            `${key} is not a valid hook`,
+                            'see PluginLifeCycleHooks'
+                        ]
+                    });
                 }
             });
         });

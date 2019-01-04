@@ -12,7 +12,7 @@ interface IContext {
     handler: ILambdaHandler;
 }
 
-describe.only('Plugin: Joi', () => {
+describe('Plugin: Joi', () => {
     const context: IContext = {
         handler: event => null
     };
@@ -55,6 +55,30 @@ describe.only('Plugin: Joi', () => {
             const value = err.type
             const expected = ErrorTypes.REQUEST_BODY_NOT_FOUND
             
+            assert.equal(value, expected);
+        };
+
+        await middleware(lambdaEvent, contextMock, lambdaCallback);
+    });
+
+    it(`should throw at ${ErrorTypes.INVALID_SCHEMA}`, async () => {
+        const schema = Joi.object().keys({
+            foo: Joi.string().required()
+        });
+        schema['isJoi'] = false;
+
+        const middleware = lambcycle(context.handler).register([
+            JoiPlugin(schema)
+        ]);
+
+        const lambdaEvent = {
+            body: []
+        };
+
+        const lambdaCallback = err => {
+            const value = err.type
+            const expected = ErrorTypes.INVALID_SCHEMA
+
             assert.equal(value, expected);
         };
 

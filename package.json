@@ -57,5 +57,9 @@
     "lambda-function",
     "serverless",
     "middleware"
-  ]
+  ],
+  "dependencies": {
+    "@types/joi": "^14.0.1",
+    "joi": "^14.3.1"
+  }
 }

@@ -1,4 +1,4 @@
-import { Callback, Context } from 'aws-lambda';
+import { Callback } from 'aws-lambda';
 import { assert } from 'chai';
 
 import ILambdaHandler from './Interfaces/ILambdaHandler';
@@ -6,21 +6,7 @@ import IWrapper from './Interfaces/IWrapper';
 import lambcycle from './main';
 import customError from './Utils/customError';
 import randomTimeout from './Utils/randomTimeout';
-
-const mockContext: Context = {
-    callbackWaitsForEmptyEventLoop: true,
-    functionName: '',
-    functionVersion: '',
-    invokedFunctionArn: '',
-    memoryLimitInMB: Math.random(),
-    awsRequestId: '',
-    logGroupName: '',
-    logStreamName: '',
-    getRemainingTimeInMillis: () => Math.random(),
-    done: () => void 0,
-    fail: () => void 0,
-    succeed: () => void 0
-};
+import contextMock from './Mocks/Lambda/Context';
 
 describe('middleware', () => {
     describe('wrapper', () => {
@@ -70,7 +56,7 @@ describe('middleware', () => {
             assert.lengthOf(wrapper.plugins.onAuth, 1);
 
             const value = pluginManifest.config;
-            const expected = wrapper.plugins.onAuth[0]();
+            const expected: any = wrapper.plugins.onAuth[0](wrapper, {})
 
             assert.deepEqual(value, expected);
         });
@@ -101,7 +87,7 @@ describe('middleware', () => {
             const funcHandler = () => null;
             const wrapper = lambcycle(funcHandler).register([pluginManifest]);
 
-            await wrapper({}, {}, () => {
+            await wrapper({}, contextMock, () => {
                 const value = wrapperHook;
                 const expected = [
                     'onRequest',
@@ -151,7 +137,7 @@ describe('middleware', () => {
             const funcHandler = () => null;
             const wrapper = lambcycle(funcHandler).register([pluginManifest]);
 
-            await wrapper({}, {}, () => {
+            await wrapper({}, contextMock, () => {
                 const value = wrapperHook;
                 const expected = [
                     'onRequest',
@@ -201,7 +187,7 @@ describe('middleware', () => {
             const funcHandler = () => null;
             const wrapper = lambcycle(funcHandler).register([pluginManifest]);
 
-            await wrapper({}, {}, () => {
+            await wrapper({}, contextMock, () => {
                 const value = wrapperHook;
                 const expected = [
                     'onRequest',
@@ -229,7 +215,7 @@ describe('middleware', () => {
             const funcHandler = () => null;
             const wrapper = lambcycle(funcHandler).register([pluginManifest]);
 
-            await wrapper({}, {}, error => {
+            await wrapper({}, contextMock, error => {
                 const value = error;
                 const expected = pluginError;
                 assert.deepEqual(value, expected);
@@ -264,7 +250,7 @@ describe('middleware', () => {
             const funcHandler = () => null;
             const wrapper = lambcycle(funcHandler).register([pluginManifest]);
 
-            await wrapper({}, {}, () => {
+            await wrapper({}, contextMock, () => {
                 const value = errorValue;
                 const expected = errorExpected;
 
@@ -283,7 +269,7 @@ describe('middleware', () => {
 
             const wrapper = lambcycle(funcHandler);
 
-            await wrapper({}, mockContext, (_, response) => {
+            await wrapper({}, contextMock, (_, response) => {
                 const value = response;
                 const expected = handlerResponse;
 
@@ -301,7 +287,7 @@ describe('middleware', () => {
 
             const wrapper = lambcycle(funcHandler);
 
-            await wrapper({}, mockContext, (_, response) => {
+            await wrapper({}, contextMock, (_, response) => {
                 const value = response;
                 const expected = handlerResponse;
 
@@ -319,7 +305,7 @@ describe('middleware', () => {
 
             const wrapper = lambcycle(funcHandler);
 
-            await wrapper({}, mockContext, (_, response) => {
+            await wrapper({}, contextMock, (_, response) => {
                 const value = response;
                 const expected = handlerResponse;
 
@@ -336,7 +322,7 @@ describe('middleware', () => {
 
             const wrapper = lambcycle(funcHandler);
 
-            await wrapper({}, mockContext, (_, response) => {
+            await wrapper({}, contextMock, (_, response) => {
                 const value = response;
                 const expected = handlerResponse;
 
@@ -354,7 +340,7 @@ describe('middleware', () => {
 
             const wrapper = lambcycle(funcHandler);
 
-            await wrapper({}, mockContext, error => {
+            await wrapper({}, contextMock, error => {
                 const value = error;
                 const expected = handlerError;
 
@@ -372,7 +358,7 @@ describe('middleware', () => {
 
             const wrapper = lambcycle(funcHandler);
 
-            await wrapper({}, mockContext, error => {
+            await wrapper({}, contextMock, error => {
                 const value = error;
                 const expected = handlerError;
 
@@ -388,7 +374,7 @@ describe('middleware', () => {
 
             const wrapper = lambcycle(funcHandler);
 
-            await wrapper({}, mockContext, error => {
+            await wrapper({}, contextMock, error => {
                 const value = error;
                 const expected = handlerError;
 
@@ -404,7 +390,7 @@ describe('middleware', () => {
 
             const wrapper = lambcycle(funcHandler);
 
-            await wrapper({}, mockContext, error => {
+            await wrapper({}, contextMock, error => {
                 const value = error;
                 const expected = handlerError;
 
@@ -439,7 +425,7 @@ describe('middleware', () => {
             };
             const wrapper = lambcycle(funcHandler).register([reporter, logger]);
 
-            await wrapper({}, mockContext, () => {
+            await wrapper({}, contextMock, () => {
                 const value = errorHandlers;
                 const expected = ['reporter', 'logger'];
 
@@ -452,17 +438,26 @@ describe('middleware', () => {
         it('should throw if no plugin is supplied', () => {
             const funcHandler = () => null;
 
-            assert.throws(() => lambcycle(funcHandler).register());
             assert.throws(() => lambcycle(funcHandler).register([]));
         });
         it('should throw if plugin hook does not exist', () => {
             const funcHandler = () => null;
 
             const logger = {
-                plugin: {
-                    randomHook: () => null
-                }
+                plugin: {}
             };
+
+            assert.throws(() => lambcycle(funcHandler).register([logger]));
+        });
+        it('should throw if plugin hook name is invalid', () => {
+            const funcHandler = () => null;
+
+
+            const logger = {
+                plugin: {}
+            };
+
+            logger.plugin['foo'] = () => null;
 
             assert.throws(() => lambcycle(funcHandler).register([logger]));
         });
