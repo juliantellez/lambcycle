@@ -206,7 +206,8 @@ export default handler;
 This project has been built with lots of ❤️ and [Typescript](https://www.typescriptlang.org) 🤣. It embraces the middleware pattern and uses types for consistency and documentation. If this approach seems familiar to you is because it was inspired by the awesome [hapijs](https://hapijs.com/api#request-lifecycle).
 
 # Contributing
-As you can see the possibilities are endless when it comes to plugins! Everyone is welcome to contribute! Feel free to create [issues](https://github.com/juliantellez/labmcycle/issues) or [prs](https://github.com/juliantellez/labmcycle/pulls).
+As you can see the possibilities are endless when it comes to plugins! Everyone is welcome to [contribute](https://github.com/juliantellez/lambcycle/blob/develop/contributing.md)! Feel free to create [issues](https://github.com/juliantellez/labmcycle/issues) or [prs](https://github.com/juliantellez/labmcycle/pulls).
+
 
 # License
 [MIT License](https://github.com/juliantellez/lambcycle/blob/master/LICENSE)
