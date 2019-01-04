@@ -66,7 +66,12 @@
 <h3>Install</h3>
 
 ```bash
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjuliantellez%2Flambcycle.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjuliantellez%2Flambcycle?ref=badge_large)
+
 # with npm
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjuliantellez%2Flambcycle.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjuliantellez%2Flambcycle?ref=badge_shield)
+
 npm install --save lambcycle
 
 # with yarn
