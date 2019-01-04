@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ ! -f ~/.ssh/id_rsa ]; then
-    echo "ERROR: No ID_RSA file detected."
+    echo "[ ERROR ] No ID_RSA file detected."
     exit 1
 fi
 
@@ -17,3 +17,5 @@ git config --global url.ssh://git@github.com/.insteadOf https://github.com/
 git config --global push.default simple
 git config --global user.email "bot.travis@lambcycle.org"
 git config --global user.name "[ TRAVIS-BOT ]"
+
+echo "[ LOG ] github config has been setup"

@@ -21,11 +21,11 @@ then
   CURRENT_BRANCH=$TRAVIS_BRANCH
 fi
 
-echo "CURRENT_BRANCH: $CURRENT_BRANCH"
-echo "COMMIT_MESSAGE: $COMMIT_MESSAGE"
+echo "[ LOG ] CURRENT_BRANCH: $CURRENT_BRANCH"
+echo "[ LOG ] COMMIT_MESSAGE: $COMMIT_MESSAGE"
 
 if [ "$CURRENT_BRANCH" != "master" ] ; then
-    echo "LOG: skipping npm publish for branch: ${CURRENT_BRANCH}"
+    echo "[ LOG ] skipping npm publish for branch: ${CURRENT_BRANCH}"
     exit 0
 fi
 
@@ -38,10 +38,15 @@ if [ $SEMVER ]; then
 fi
 
 # VERSION
-echo "LOG: Npm Release : ${RELEASE_VERSION}"
+echo "[ LOG ] Npm Release : ${RELEASE_VERSION}"
 npm version $RELEASE_VERSION -m "[ci skip] Update package to v%s"
 
-git push origin master --no-verify
+echo "[ LOG ] Checkout UPDATE_PACKAGE_VERSION:"
+UPDATE_PACKAGE_VERSION=task/update_package_version_$(git log --pretty=format:'%h' -n 1)
+git checkout -b $UPDATE_PACKAGE_VERSION
+
+echo "[ LOG ] Push to origin:"
+git push origin $UPDATE_PACKAGE_VERSION
 git push origin --tags --no-verify
 
 # PUBLISH
