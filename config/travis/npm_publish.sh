@@ -10,8 +10,6 @@
 # - Npm publish
 ##
 
-set -eo pipefail
-
 GIT_COMMIT_MESSAGE=$(git log --oneline --format=%B -n 1 HEAD | head -n 1)
 
 COMMIT_MESSAGE=$GIT_COMMIT_MESSAGE

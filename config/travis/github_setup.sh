@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -eo pipefail
-
 if [ ! -f ~/.ssh/id_rsa ]; then
     echo "[ ERROR ] No ID_RSA file detected."
     exit 1
