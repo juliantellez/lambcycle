@@ -51,15 +51,20 @@
     <img src="https://snyk.io/test/github/juliantellez/lambcycle/badge.svg?targetFile=package.json" alt="Known Vulnerabilities" style="max-width:100%; padding:3px;">
 </a>
 
+<!---serverless--->
 <a href="http://www.serverless.com" target="_blank">
     <img src="http://public.serverless.com/badges/v3.svg" alt="Serverless" style="max-width:100%; padding:3px;">
 </a>
 
-
+<!---MIT License--->
 <a href="https://opensource.org/licenses/MIT" target="_blank">
     <img src="http://img.shields.io/badge/license-MIT-blue.svg?style=flat" alt="MIT License" style="max-width:100%; padding:3px;">
 </a>
 
+<!---FOSSA--->
+<a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fjuliantellez%2Flambcycle?ref=badge_shield" target="_blank">
+    <img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjuliantellez%2Flambcycle.svg?type=shield" alt="FOSSA Status" style="max-width:100%; padding:3px;">
+</a>
 </p>
 
  - [Install](#install)
@@ -170,7 +175,7 @@ export default sentryPlugin;
 
 # Using a plugin
 
-Let's reuse the example above
+Let's reuse the example above. Make sure your lambdas follow the [Principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege) and your secrets stay SECRET ㊙️
 
 ```typescript
 import lambcycle from 'lambcycle'
@@ -193,6 +198,13 @@ export default handler;
 
 # About the project
 
+This project has been built with lots of ❤️ and [Typescript](https://www.typescriptlang.org) 🤣. It embraces the middleware pattern and uses types for consistency and documentation. If this approach seems familiar to you is because it was taken from the awesome [hapijs](https://hapijs.com/api#request-lifecycle).
+
 # Contributing
+As you can see the possibilities are endless when it comes to plugins! Everyone is welcome to contribute feel free to create [issues](https://github.com/juliantellez/labmcycle/issues) or [prs](https://github.com/juliantellez/labmcycle/pulls)
 
 # License
+[MIT License](https://github.com/juliantellez/lambcycle/blob/master/LICENSE)
+<a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fjuliantellez%2Flambcycle?ref=badge_large" target="_blank">
+    <img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjuliantellez%2Flambcycle.svg?type=large" alt="FOSSA Status" style="max-width:100%; padding:3px;">
+</a>
