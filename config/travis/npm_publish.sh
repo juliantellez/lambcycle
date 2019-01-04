@@ -24,10 +24,10 @@ fi
 echo "[ LOG ] CURRENT_BRANCH: $CURRENT_BRANCH"
 echo "[ LOG ] COMMIT_MESSAGE: $COMMIT_MESSAGE"
 
-# if [ "$CURRENT_BRANCH" != "master" ] ; then
-#     echo "[ LOG ] skipping npm publish for branch: ${CURRENT_BRANCH}"
-#     exit 0
-# fi
+if [ "$CURRENT_BRANCH" != "master" ] ; then
+    echo "[ LOG ] skipping npm publish for branch: ${CURRENT_BRANCH}"
+    exit 0
+fi
 
 # SEMVER
 SEMVER=$(echo ${COMMIT_MESSAGE} | awk 'match(tolower($0),/(minor|major)/) {print substr(tolower($0),RSTART,RLENGTH)}')
@@ -41,19 +41,13 @@ fi
 echo "[ LOG ] Npm Release : ${RELEASE_VERSION}"
 npm version $RELEASE_VERSION -m "[ci skip] Update package to v%s"
 
-echo "[ LOG] parse HEAD:"
-git rev-parse --abbrev-ref HEAD
-echo "[ LOG] commit message:"
-git log --oneline --format=%B -n 1 HEAD | head -n 1
+echo "[ LOG ] Checkout UPDATE_PACKAGE_VERSION:"
+UPDATE_PACKAGE_VERSION=task/update_package_version_$(git log --pretty=format:'%h' -n 1)
+git checkout -b $UPDATE_PACKAGE_VERSION
 
-UPDATE_NPM_BRANCH=task/update_npm_version_$(git log --pretty=format:'%h' -n 1)
-echo "[ LOG ] CHECKOUT ${UPDATE_NPM_BRANCH}:"
-git checkout -b $UPDATE_NPM_BRANCH
-
-echo "[ LOG ] git PUSH:"
-git push origin $UPDATE_NPM_BRANCH
-
-# git push origin --tags --no-verify
+echo "[ LOG ] Push to origin:"
+git push origin $UPDATE_PACKAGE_VERSION
+git push origin --tags --no-verify
 
 # PUBLISH
-# npm publish
+npm publish
