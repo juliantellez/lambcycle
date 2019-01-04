@@ -1,7 +1,6 @@
 ---
 name: Other
 about: Other requests
-
 ---
 
 
