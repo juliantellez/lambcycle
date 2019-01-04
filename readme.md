@@ -50,20 +50,33 @@
 <a href="https://snyk.io/test/github/juliantellez/lambcycle?targetFile=package.json" target="_blank">
     <img src="https://snyk.io/test/github/juliantellez/lambcycle/badge.svg?targetFile=package.json" alt="Known Vulnerabilities" style="max-width:100%; padding:3px;">
 </a>
+
+<!---serverless--->
+<a href="http://www.serverless.com" target="_blank">
+    <img src="http://public.serverless.com/badges/v3.svg" alt="Serverless" style="max-width:100%; padding:3px;">
+</a>
+
+<!---MIT License--->
+<a href="https://opensource.org/licenses/MIT" target="_blank">
+    <img src="http://img.shields.io/badge/license-MIT-blue.svg?style=flat" alt="MIT License" style="max-width:100%; padding:3px;">
+</a>
+
+<!---FOSSA--->
+<a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fjuliantellez%2Flambcycle?ref=badge_shield" target="_blank">
+    <img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjuliantellez%2Flambcycle.svg?type=shield" alt="FOSSA Status" style="max-width:100%; padding:3px;">
+</a>
 </p>
-<!---links--->
 
-<p align="center">
-    <a href="https://opensource.org/licenses/MIT" target="_blank">
-<img src="https://opensource.org/files/osi_keyhole_300X300_90ppi_0.png" height=50 alt="MIT License">
-    </a>
-</p>
+ - [Install](#install)
+ - [Introduction](#Introduction)
+ - [Handler Lifecycle](#Handler-lifecycle)
+ - [Creating a Plugin](#creating-a-plugin)
+ - [Using a Plugin](#using-a-plugin)
+ - [About the project](#about-the-project)
+ - [Contributing](#contributing)
+ - [License](#license)
 
-<!---icons--->
-
-<h2 align="center">Getting Started</h2>
-
-<h3>Install</h3>
+# Install
 
 ```bash
 # with npm
@@ -73,11 +86,23 @@ npm install --save lambcycle
 yarn add lambcycle
 ```
 
+# Introduction
+
+Lambcycle is a middleware for lambda functions. It defines a configurable life-cycle and allows you to focus on your application's logic. It has a "Feature as Plugin" approach, so you can easily create your own plugins or reuse your favorite packages with very little effort 🐑 🛵.
+
+Checkout the following example or follow the link to
+[🎉 see some actual code 🎉 ](https://github.com/juliantellez/lambcycle/tree/master/examples).
+
+
 ```javascript
 // with es6
 
-import lambcycle, { bodyParser, joi as lambcycleJoi, pino } from "lambcycle";
 import Joi from "joi";
+import lambcycle from "lambcycle";
+
+import pinoPlugin from './myPinoPlugin'
+import joiPlugin from './myJoiPlugin'
+import bodyParserPlugin from './myBodyParserPlugin'
 
 import applicationLogic from "./mycode";
 
@@ -93,27 +118,97 @@ const processData = async (event, context) => {
 
 const schema = Joi.object()
   .keys({
-    username: Joi.string()
-      .alphanum()
-      .min(3)
-      .max(30)
-      .required(),
-    password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
-    access_token: [Joi.string(), Joi.number()],
-    birthyear: Joi.number()
-      .integer()
-      .min(1900)
-      .max(2013),
+    username: Joi.string().alphanum().min(5).required(),
+    password: Joi.string().regex(/^[a-zA-Z0-9]{5,30}$/),
     email: Joi.string().email({ minDomainAtoms: 2 })
-  })
-  .with("username", "birthyear")
-  .without("password", "access_token");
+  });
 
 const handler = lambcycle(processData).register([
-  pino,
-  bodyParser,
-  lambcycleJoi(schema)
+  pinoPlugin,
+  bodyParserPlugin,
+  joiPlugin(schema)
 ]);
 
 export default handler;
 ```
+
+# Handler lifecycle
+
+The lifecycle provides a clear guideline to reason about your needs. Every step of the cycle can handle or throw errors making it easy to log, report or debug.
+
+<img src="https://github.com/juliantellez/lambcycle/tree/master/assets/lifecycle.svg" height=500>
+
+
+# Creating a plugin 
+
+A plugin is an object that can attach its hooks to one or more event cycles, it may provide its own configuration object.
+
+```typescript
+type IPluginHookFunction = (
+    wrapper: IWrapper,
+    config: object,
+    handleError?: Callback
+) => void;
+```
+
+```typescript
+import * as Sentry from '@sentry/node';
+import MyAwesomeIntegration from './MyAwesomeIntegration'
+
+const sentryPlugin = (config) => {
+    Sentry.init({
+        dsn: `https://config.key@sentry.io/${config.project}`,
+        integrations: [new MyAwesomeIntegration()]
+    });
+
+    return {
+        config,
+        plugin: {
+            onPreResponse: async (handlerWrapper, config) => {
+                Sentry.captureMessage('some percentile log perhaps?')
+            },
+            onError: async (handlerWrapper, config) => {
+                Sentry.captureException(handlerWrapper.error);
+            }
+        }
+    }
+}
+
+export default sentryPlugin;
+```
+
+# Using a plugin
+
+Let's reuse the example above. Make sure your lambdas follow the [Principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege) and your secrets stay SECRET ㊙️
+
+```typescript
+import lambcycle from 'lambcycle'
+import sentryPlugin from './sentryPlugin'
+
+const myApplicationLogic = async (event, context) => {
+    await someLogic()
+}
+
+const handler = lambcycle(myApplicationLogic)
+.register([
+    sentryPlugin({
+        key: process.env.SENTRY_KEY,
+        project: process.env.SENTRY_PROJECT,
+    })
+]);
+
+export default handler;
+```
+
+# About the project
+
+This project has been built with lots of ❤️ and [Typescript](https://www.typescriptlang.org) 🤣. It embraces the middleware pattern and uses types for consistency and documentation. If this approach seems familiar to you is because it was inspired by the awesome [hapijs](https://hapijs.com/api#request-lifecycle).
+
+# Contributing
+As you can see the possibilities are endless when it comes to plugins! Everyone is welcome to contribute! Feel free to create [issues](https://github.com/juliantellez/labmcycle/issues) or [prs](https://github.com/juliantellez/labmcycle/pulls).
+
+# License
+[MIT License](https://github.com/juliantellez/lambcycle/blob/master/LICENSE)
+<a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fjuliantellez%2Flambcycle?ref=badge_large" target="_blank">
+    <img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjuliantellez%2Flambcycle.svg?type=large" alt="FOSSA Status" style="max-width:100%; padding:3px;">
+</a>
