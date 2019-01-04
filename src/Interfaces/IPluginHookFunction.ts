@@ -5,7 +5,7 @@ import IWrapper from './IWrapper';
 type IPluginHookFunction = (
     wrapper: IWrapper,
     options: object,
-    handleError?: Callback
+    handleError: Callback
 ) => void;
 
 export default IPluginHookFunction;

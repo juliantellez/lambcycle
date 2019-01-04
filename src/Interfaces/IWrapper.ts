@@ -1,6 +1,7 @@
 import { Callback, Context } from 'aws-lambda';
 
 import ILifeCyclePlugins from './ILifeCyclePlugins';
+import IPluginManifest from './IPluginManifest';
 
 interface IWrapper {
     (
@@ -11,10 +12,10 @@ interface IWrapper {
     context: Context;
     callback: Callback;
     plugins: ILifeCyclePlugins;
-    register: any;
     event: any;
     error: any;
     response: any;
+    register(plugins: IPluginManifest[]): IWrapper;
 }
 
 export default IWrapper;

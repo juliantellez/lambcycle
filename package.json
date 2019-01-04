@@ -29,19 +29,27 @@
       "path": "./dist/main.js",
       "maxSize": "11 kB",
       "compression": "none"
+    },
+    {
+        "path": "./dist/joiPlugin.js",
+        "maxSize": "3 kB",
+        "compression": "none"
     }
   ],
   "devDependencies": {
     "@types/aws-lambda": "^8.10.17",
     "@types/chai": "^4.1.7",
+    "@types/joi": "^14.0.1",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.18",
     "aws-lambda": "^0.1.2",
     "bundlesize": "^0.17.0",
     "chai": "^4.2.0",
     "coveralls": "^3.0.2",
+    "joi": "^14.3.1",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0",
+    "peer-deps-externals-webpack-plugin": "^1.0.4",
     "prettier": "^1.15.3",
     "ts-loader": "^5.3.2",
     "ts-node": "^7.0.1",
@@ -50,6 +58,9 @@
     "typescript": "^3.2.2",
     "webpack": "^4.28.3",
     "webpack-cli": "^3.2.0"
+  },
+  "peerDependencies": {
+    "joi": "^14.3.1"
   },
   "keywords": [
     "lambda",

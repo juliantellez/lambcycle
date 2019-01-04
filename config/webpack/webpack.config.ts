@@ -1,12 +1,19 @@
 import * as path from 'path';
+import * as PeerDepsExternalsPlugin from 'peer-deps-externals-webpack-plugin';
 
-const ENTRY_FILE = path.resolve(__dirname, '../../src/main.ts');
+const INPUT_DIR = path.resolve(__dirname, '../../src');
 const OUTPUT_DIR = path.resolve(__dirname, '../../dist');
+
+const LAMBCYCLE = path.resolve(INPUT_DIR, 'main.ts');
+const PLUGIN_JOI = path.resolve(INPUT_DIR, 'Plugins/Joi/main.ts');
 
 const webpackConfig = {
     target: 'node',
     mode: 'production',
-    entry: ENTRY_FILE,
+    entry: {
+        main: LAMBCYCLE,
+        joiPlugin: PLUGIN_JOI
+    },
     output: {
         path: OUTPUT_DIR,
         filename: '[name].js',
@@ -24,7 +31,8 @@ const webpackConfig = {
                 loader: 'ts-loader'
             }
         ]
-    }
+    },
+    plugins: [new PeerDepsExternalsPlugin()]
 };
 
 export default webpackConfig;
