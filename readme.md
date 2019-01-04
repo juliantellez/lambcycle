@@ -50,20 +50,28 @@
 <a href="https://snyk.io/test/github/juliantellez/lambcycle?targetFile=package.json" target="_blank">
     <img src="https://snyk.io/test/github/juliantellez/lambcycle/badge.svg?targetFile=package.json" alt="Known Vulnerabilities" style="max-width:100%; padding:3px;">
 </a>
+
+<a href="http://www.serverless.com" target="_blank">
+    <img src="http://public.serverless.com/badges/v3.svg" alt="Serverless" style="max-width:100%; padding:3px;">
+</a>
+
+
+<a href="https://opensource.org/licenses/MIT" target="_blank">
+    <img src="http://img.shields.io/badge/license-MIT-blue.svg?style=flat" alt="MIT License" style="max-width:100%; padding:3px;">
+</a>
+
 </p>
-<!---links--->
 
-<p align="center">
-    <a href="https://opensource.org/licenses/MIT" target="_blank">
-<img src="https://opensource.org/files/osi_keyhole_300X300_90ppi_0.png" height=50 alt="MIT License">
-    </a>
-</p>
+ - [Install](#install)
+ - [Introduction](#Introduction)
+ - [Handler Lifecycle](#Handler-lifecycle)
+ - [Creating a Plugin](#creating-a-plugin)
+ - [Using a Plugin](#using-a-plugin)
+ - [About the project](#about-the-project)
+ - [Contributing](#contributing)
+ - [License](#license)
 
-<!---icons--->
-
-<h2 align="center">Getting Started</h2>
-
-<h3>Install</h3>
+# Install
 
 ```bash
 # with npm
@@ -72,6 +80,14 @@ npm install --save lambcycle
 # with yarn
 yarn add lambcycle
 ```
+
+# Introduction
+
+Lambcycle is a middleware for lambda functions. It defines a configurable life-cycle and allows you to focus on your application's logic. It has a "Feature as Plugin" approach, so you can easily create your own plugins or reuse your favorite packages with very little effort 🐑 🛵.
+
+Checkout the following example or follow the link to
+[🎉 see some actual code 🎉 ](https://github.com/juliantellez/lambcycle/tree/master/examples).
+
 
 ```javascript
 // with es6
@@ -93,21 +109,10 @@ const processData = async (event, context) => {
 
 const schema = Joi.object()
   .keys({
-    username: Joi.string()
-      .alphanum()
-      .min(3)
-      .max(30)
-      .required(),
-    password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
-    access_token: [Joi.string(), Joi.number()],
-    birthyear: Joi.number()
-      .integer()
-      .min(1900)
-      .max(2013),
+    username: Joi.string().alphanum().min(5).required(),
+    password: Joi.string().regex(/^[a-zA-Z0-9]{5,30}$/),
     email: Joi.string().email({ minDomainAtoms: 2 })
-  })
-  .with("username", "birthyear")
-  .without("password", "access_token");
+  });
 
 const handler = lambcycle(processData).register([
   pino,
@@ -117,3 +122,77 @@ const handler = lambcycle(processData).register([
 
 export default handler;
 ```
+
+# Handler lifecycle
+
+The lifecycle provides a clear guideline to reason about your needs. Every step of the cycle can handle or throw errors making it easy to log, report or debug.
+
+<img src="./assets/lifecycle.svg">
+
+
+# Creating a plugin 
+
+A plugin is an object that can attach its hooks to one or more event cycles, it may provide its own configuration object.
+
+```typescript
+type IPluginHookFunction = (
+    wrapper: IWrapper,
+    config: object,
+    handleError?: Callback
+) => void;
+```
+
+```typescript
+import * as Sentry from '@sentry/node';
+import MyAwesomeIntegration from './MyAwesomeIntegration'
+
+const sentryPlugin = (config) => {
+    Sentry.init({
+        dsn: `https://config.key@sentry.io/${config.project}`,
+        integrations: [new MyAwesomeIntegration()]
+    });
+
+    return {
+        config,
+        plugin: {
+            onPreResponse: async (handlerWrapper, config) => {
+                Sentry.captureMessage('some percentile log perhaps?')
+            },
+            onError: async (handlerWrapper, config) => {
+                Sentry.captureException(handlerWrapper.error);
+            }
+        }
+    }
+}
+
+export default sentryPlugin;
+```
+
+# Using a plugin
+
+Let's reuse the example above
+
+```typescript
+import lambcycle from 'lambcycle'
+import sentryPlugin from './sentryPlugin'
+
+const myApplicationLogic = async (event, context) => {
+    await someLogic()
+}
+
+const handler = lambcycle(myApplicationLogic)
+.register([
+    sentryPlugin({
+        key: process.env.SENTRY_KEY,
+        project: process.env.SENTRY_PROJECT,
+    })
+]);
+
+export default handler;
+```
+
+# About the project
+
+# Contributing
+
+# License
