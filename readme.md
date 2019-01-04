@@ -136,8 +136,9 @@ export default handler;
 
 The lifecycle provides a clear guideline to reason about your needs. Every step of the cycle can handle or throw errors making it easy to log, report or debug.
 
-<img src="https://github.com/juliantellez/lambcycle/tree/master/assets/lifecycle.svg" height=500>
-
+<p align="center">
+<img src="https://raw.githubusercontent.com/juliantellez/lambcycle/master/assets/lifecycle.svg?sanitize=true" height=500>
+</p>
 
 # Creating a plugin 
 
@@ -209,6 +210,8 @@ As you can see the possibilities are endless when it comes to plugins! Everyone 
 
 # License
 [MIT License](https://github.com/juliantellez/lambcycle/blob/master/LICENSE)
+
+
 <a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fjuliantellez%2Flambcycle?ref=badge_large" target="_blank">
     <img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjuliantellez%2Flambcycle.svg?type=large" alt="FOSSA Status" style="max-width:100%; padding:3px;">
 </a>
