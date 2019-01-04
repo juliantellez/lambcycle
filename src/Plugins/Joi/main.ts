@@ -25,7 +25,7 @@ const joiPlugin = (schema: Joi.Schema) => {
                 if (error) {
                     throw createError({
                         type: ErrorTypes.VALIDATION_ERROR,
-                        source: error,
+                        source: error
                     });
                 }
             }

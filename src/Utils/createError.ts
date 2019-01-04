@@ -5,7 +5,6 @@ interface IError {
 }
 
 const createError = (errorEvent: IError) => {
-
     return errorEvent;
 };
 

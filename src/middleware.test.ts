@@ -56,7 +56,7 @@ describe('middleware', () => {
             assert.lengthOf(wrapper.plugins.onAuth, 1);
 
             const value = pluginManifest.config;
-            const expected: any = wrapper.plugins.onAuth[0](wrapper, {})
+            const expected: any = wrapper.plugins.onAuth[0](wrapper, {});
 
             assert.deepEqual(value, expected);
         });
@@ -451,7 +451,6 @@ describe('middleware', () => {
         });
         it('should throw if plugin hook name is invalid', () => {
             const funcHandler = () => null;
-
 
             const logger = {
                 plugin: {}

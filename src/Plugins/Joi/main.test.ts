@@ -52,9 +52,9 @@ describe('Plugin: Joi', () => {
         const lambdaEvent = {};
 
         const lambdaCallback = err => {
-            const value = err.type
-            const expected = ErrorTypes.REQUEST_BODY_NOT_FOUND
-            
+            const value = err.type;
+            const expected = ErrorTypes.REQUEST_BODY_NOT_FOUND;
+
             assert.equal(value, expected);
         };
 
@@ -76,8 +76,8 @@ describe('Plugin: Joi', () => {
         };
 
         const lambdaCallback = err => {
-            const value = err.type
-            const expected = ErrorTypes.INVALID_SCHEMA
+            const value = err.type;
+            const expected = ErrorTypes.INVALID_SCHEMA;
 
             assert.equal(value, expected);
         };
@@ -99,8 +99,8 @@ describe('Plugin: Joi', () => {
         };
 
         const lambdaCallback = err => {
-            const value = err.type
-            const expected = ErrorTypes.VALIDATION_ERROR
+            const value = err.type;
+            const expected = ErrorTypes.VALIDATION_ERROR;
 
             assert.equal(value, expected);
         };

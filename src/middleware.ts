@@ -12,7 +12,7 @@ import ILifeCyclePlugins from './Interfaces/ILifeCyclePlugins';
 import IPluginHookFunction from './Interfaces/IPluginHookFunction';
 import IPluginManifest from './Interfaces/IPluginManifest';
 import IWrapper from './Interfaces/IWrapper';
-import createError from './Utils/createError'
+import createError from './Utils/createError';
 import ErrorTypes from './Constants/ErrorTypes';
 
 const preHandlerHookList = Object['values'](PreHandlerLifeCycleHooks);
@@ -31,21 +31,20 @@ const middleware = (lambdaHandler: ILambdaHandler) => {
     const register = (pluginsManifest?: IPluginManifest[]): IWrapper => {
         if (!pluginsManifest || !pluginsManifest.length) {
             throw createError({
-                type: ErrorTypes.REGISTER_NO_PLUGINS_PRESENT,
+                type: ErrorTypes.REGISTER_NO_PLUGINS_PRESENT
             });
         }
 
         pluginsManifest.forEach(pluginManifest => {
-            const plugin = Object.keys(pluginManifest.plugin)
+            const plugin = Object.keys(pluginManifest.plugin);
 
             if (!plugin || !plugin.length) {
                 throw createError({
-                    type: ErrorTypes.REGISTER_PLUGIN_DOES_NOT_HAVE_HOOKS,
+                    type: ErrorTypes.REGISTER_PLUGIN_DOES_NOT_HAVE_HOOKS
                 });
             }
 
             Object.keys(pluginManifest.plugin).forEach(key => {
-
                 if (Object['values'](PluginLifeCycleHooks).includes(key)) {
                     const currentPlugin = pluginManifest.plugin[key];
                     const { config: pluginConfig } = pluginManifest;

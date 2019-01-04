@@ -12,7 +12,7 @@ const webpackConfig = {
     mode: 'production',
     entry: {
         main: LAMBCYCLE,
-        joiPlugin: PLUGIN_JOI,
+        joiPlugin: PLUGIN_JOI
     },
     output: {
         path: OUTPUT_DIR,
@@ -32,9 +32,7 @@ const webpackConfig = {
             }
         ]
     },
-    plugins: [
-        new PeerDepsExternalsPlugin(),
-    ]
+    plugins: [new PeerDepsExternalsPlugin()]
 };
 
 export default webpackConfig;
