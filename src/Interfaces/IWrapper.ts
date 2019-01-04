@@ -12,10 +12,10 @@ interface IWrapper {
     context: Context;
     callback: Callback;
     plugins: ILifeCyclePlugins;
-    register(plugins: IPluginManifest[]): IWrapper;
     event: any;
     error: any;
     response: any;
+    register(plugins: IPluginManifest[]): IWrapper;
 }
 
 export default IWrapper;

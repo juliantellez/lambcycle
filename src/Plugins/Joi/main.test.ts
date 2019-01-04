@@ -1,12 +1,13 @@
-import * as Joi from 'joi';
 import { assert } from 'chai';
+import * as Joi from 'joi';
 
-import JoiPlugin from './main';
-import lambcycle from '../../main';
 import ILambdaHandler from '../../Interfaces/ILambdaHandler';
 import IWrapper from '../../Interfaces/IWrapper';
+import lambcycle from '../../main';
 import contextMock from '../../Mocks/Lambda/Context';
+
 import ErrorTypes from './ErrorTypes';
+import JoiPlugin from './main';
 
 interface IContext {
     handler: ILambdaHandler;

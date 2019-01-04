@@ -4,9 +4,9 @@ import { assert } from 'chai';
 import ILambdaHandler from './Interfaces/ILambdaHandler';
 import IWrapper from './Interfaces/IWrapper';
 import lambcycle from './main';
+import contextMock from './Mocks/Lambda/Context';
 import customError from './Utils/customError';
 import randomTimeout from './Utils/randomTimeout';
-import contextMock from './Mocks/Lambda/Context';
 
 describe('middleware', () => {
     describe('wrapper', () => {

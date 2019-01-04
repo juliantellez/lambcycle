@@ -1,5 +1,6 @@
 import { Callback, Context } from 'aws-lambda';
 
+import ErrorTypes from './Constants/ErrorTypes';
 import {
     PluginLifeCycleHooks,
     PostHandlerLifeCycleHooks,
@@ -13,7 +14,6 @@ import IPluginHookFunction from './Interfaces/IPluginHookFunction';
 import IPluginManifest from './Interfaces/IPluginManifest';
 import IWrapper from './Interfaces/IWrapper';
 import createError from './Utils/createError';
-import ErrorTypes from './Constants/ErrorTypes';
 
 const preHandlerHookList = Object['values'](PreHandlerLifeCycleHooks);
 const postHandlerHookList = Object['values'](PostHandlerLifeCycleHooks);
@@ -51,11 +51,11 @@ const middleware = (lambdaHandler: ILambdaHandler) => {
 
                     // bind workaround
                     const passConfigToPlugin = (
-                        plugin: IPluginHookFunction
+                        innerPlugin: IPluginHookFunction
                     ) => (config = {}) => (
                         innerWrapper: IWrapper,
                         handleError: Callback
-                    ) => plugin(innerWrapper, config, handleError);
+                    ) => innerPlugin(innerWrapper, config, handleError);
 
                     const lifeCycleMethod = passConfigToPlugin(currentPlugin)(
                         pluginConfig
