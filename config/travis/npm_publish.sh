@@ -10,6 +10,8 @@
 # - Npm publish
 ##
 
+set -eo pipefail
+
 GIT_COMMIT_MESSAGE=$(git log --oneline --format=%B -n 1 HEAD | head -n 1)
 
 COMMIT_MESSAGE=$GIT_COMMIT_MESSAGE
@@ -46,7 +48,7 @@ git rev-parse --abbrev-ref HEAD
 echo "[ LOG] commit message:"
 git log --oneline --format=%B -n 1 HEAD | head -n 1
 
-UPDATE_NPM_BRANCH=task/update_npm_version/$(git log --pretty=format:'%h' -n 1)
+UPDATE_NPM_BRANCH=task/update_npm_version_$(git log --pretty=format:'%h' -n 1)
 echo "[ LOG ] CHECKOUT ${UPDATE_NPM_BRANCH}:"
 git checkout -b $UPDATE_NPM_BRANCH
 

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eo pipefail
+
 NPM_TOKEN=$1
 
 if [ -z "${NPM_TOKEN}" ]; then
