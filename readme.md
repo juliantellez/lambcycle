@@ -97,8 +97,12 @@ Checkout the following example or follow the link to
 ```javascript
 // with es6
 
-import lambcycle, { bodyParser, joi as lambcycleJoi, pino } from "lambcycle";
 import Joi from "joi";
+import lambcycle from "lambcycle";
+
+import pinoPlugin from './myPinoPlugin'
+import joiPlugin from './myJoiPlugin'
+import bodyParserPlugin from './myBodyParserPlugin'
 
 import applicationLogic from "./mycode";
 
@@ -120,9 +124,9 @@ const schema = Joi.object()
   });
 
 const handler = lambcycle(processData).register([
-  pino,
-  bodyParser,
-  lambcycleJoi(schema)
+  pinoPlugin,
+  bodyParserPlugin,
+  joiPlugin(schema)
 ]);
 
 export default handler;
@@ -132,7 +136,7 @@ export default handler;
 
 The lifecycle provides a clear guideline to reason about your needs. Every step of the cycle can handle or throw errors making it easy to log, report or debug.
 
-<img src="./assets/lifecycle.svg">
+<img src="https://github.com/juliantellez/lambcycle/tree/master/assets/lifecycle.svg" height=500>
 
 
 # Creating a plugin 
@@ -198,10 +202,10 @@ export default handler;
 
 # About the project
 
-This project has been built with lots of ❤️ and [Typescript](https://www.typescriptlang.org) 🤣. It embraces the middleware pattern and uses types for consistency and documentation. If this approach seems familiar to you is because it was taken from the awesome [hapijs](https://hapijs.com/api#request-lifecycle).
+This project has been built with lots of ❤️ and [Typescript](https://www.typescriptlang.org) 🤣. It embraces the middleware pattern and uses types for consistency and documentation. If this approach seems familiar to you is because it was inspired by the awesome [hapijs](https://hapijs.com/api#request-lifecycle).
 
 # Contributing
-As you can see the possibilities are endless when it comes to plugins! Everyone is welcome to contribute feel free to create [issues](https://github.com/juliantellez/labmcycle/issues) or [prs](https://github.com/juliantellez/labmcycle/pulls)
+As you can see the possibilities are endless when it comes to plugins! Everyone is welcome to contribute! Feel free to create [issues](https://github.com/juliantellez/labmcycle/issues) or [prs](https://github.com/juliantellez/labmcycle/pulls).
 
 # License
 [MIT License](https://github.com/juliantellez/lambcycle/blob/master/LICENSE)
