@@ -45,10 +45,14 @@ echo "[ LOG] parse HEAD:"
 git rev-parse --abbrev-ref HEAD
 echo "[ LOG] commit message:"
 git log --oneline --format=%B -n 1 HEAD | head -n 1
-echo "[ LOG ] git status:"
-git status
-echo "[ LOG ] git commit:"
-git push origin $CURRENT_BRANCH:refs/heads/$CURRENT_BRANCH
+
+UPDATE_NPM_BRANCH=task/update_npm_version/$(git log --pretty=format:'%h' -n 1)
+echo "[ LOG ] CHECKOUT ${UPDATE_NPM_BRANCH}:"
+git checkout -b $UPDATE_NPM_BRANCH
+
+echo "[ LOG ] git PUSH:"
+git push origin $UPDATE_NPM_BRANCH
+
 # git push origin --tags --no-verify
 
 # PUBLISH
