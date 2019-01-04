@@ -24,20 +24,10 @@ fi
 echo "[ LOG ] CURRENT_BRANCH: $CURRENT_BRANCH"
 echo "[ LOG ] COMMIT_MESSAGE: $COMMIT_MESSAGE"
 
-# ensure you are not in a detached HEAD
-if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ] ; then
-    echo "[ LOG ] git status:"
-    git status
-    echo "[ LOG ] git commit:"
-    git commit --allow-empty -m 'travis: test clone push'
-    echo "[ LOG ] git push:"
-    git push origin $CURRENT_BRANCH:refs/heads/$CURRENT_BRANCH
-fi
-
-if [ "$CURRENT_BRANCH" != "master" ] ; then
-    echo "[ LOG ] skipping npm publish for branch: ${CURRENT_BRANCH}"
-    exit 0
-fi
+# if [ "$CURRENT_BRANCH" != "master" ] ; then
+#     echo "[ LOG ] skipping npm publish for branch: ${CURRENT_BRANCH}"
+#     exit 0
+# fi
 
 # SEMVER
 SEMVER=$(echo ${COMMIT_MESSAGE} | awk 'match(tolower($0),/(minor|major)/) {print substr(tolower($0),RSTART,RLENGTH)}')
@@ -51,8 +41,15 @@ fi
 echo "[ LOG ] Npm Release : ${RELEASE_VERSION}"
 npm version $RELEASE_VERSION -m "[ci skip] Update package to v%s"
 
-git push origin HEAD --no-verify
-git push origin --tags --no-verify
+echo "[ LOG] parse HEAD:"
+git rev-parse --abbrev-ref HEAD
+echo "[ LOG] commit message:"
+git log --oneline --format=%B -n 1 HEAD | head -n 1
+echo "[ LOG ] git status:"
+git status
+echo "[ LOG ] git commit:"
+git push origin $CURRENT_BRANCH:refs/heads/$CURRENT_BRANCH
+# git push origin --tags --no-verify
 
 # PUBLISH
-npm publish
+# npm publish
