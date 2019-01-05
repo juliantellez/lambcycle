@@ -12,6 +12,7 @@ plugin-body-parser.min.js: 5.61KB (no compression) ❤️
 
 
 - [Install](#install)
+- [Parsers](#parsers)
 - [Using the Plugin](#using-the-plugin)
 - [Considerations](#considerations)
 - [Contributing](#contributing)
@@ -27,6 +28,10 @@ npm install --save lambcycle
 # with yarn
 yarn add lambcycle
 ```
+
+# Parsers
+- [JSON Body Parser](https://github.com/expressjs/body-parser#bodyparserjsonoptions)
+- TODO: raw|text|urlencoded
 
 # Using the plugin
 
