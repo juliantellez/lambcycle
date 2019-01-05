@@ -39,7 +39,7 @@
     },
     {
       "path": "./dist/plugin-body-parser.min.js",
-      "maxSize": "4 kB",
+      "maxSize": "6 kB",
       "compression": "none"
     }
   ],
@@ -53,7 +53,6 @@
     "aws-lambda": "^0.1.2",
     "bundlesize": "^0.17.0",
     "chai": "^4.2.0",
-    "content-type": "^1.0.4",
     "coveralls": "^3.0.2",
     "joi": "^14.3.1",
     "mocha": "^5.2.0",
@@ -69,8 +68,10 @@
     "webpack-cli": "^3.2.0"
   },
   "peerDependencies": {
-    "content-type": "^1.0.4",
     "joi": "^14.3.1"
+  },
+  "dependencies": {
+    "content-type": "^1.0.4"
   },
   "keywords": [
     "lambda",
