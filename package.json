@@ -19,20 +19,27 @@
     "test:coverage": "nyc npm run test",
     "test:bundlesize": "bundlesize",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "build": "rm -rf dist && webpack --config config/webpack/webpack.config.ts"
+    "build": "rm -rf dist && npm run build:dev && npm run build:prod",
+    "build:prod": "webpack --config config/webpack/webpack.config.ts --env.production",
+    "build:dev": "webpack --config config/webpack/webpack.config.ts"
   },
   "nyc": {
     "extends": "config/nyc/nycrc.json"
   },
   "bundlesize": [
     {
-      "path": "./dist/main.js",
+      "path": "./dist/main.min.js",
       "maxSize": "11 kB",
       "compression": "none"
     },
     {
-      "path": "./dist/joiPlugin.js",
+      "path": "./dist/plugin-joi.min.js",
       "maxSize": "3 kB",
+      "compression": "none"
+    },
+    {
+      "path": "./dist/plugin-body-parser.min.js",
+      "maxSize": "4 kB",
       "compression": "none"
     }
   ],

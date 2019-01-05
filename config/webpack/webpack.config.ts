@@ -5,34 +5,47 @@ const INPUT_DIR = path.resolve(__dirname, '../../src');
 const OUTPUT_DIR = path.resolve(__dirname, '../../dist');
 
 const LAMBCYCLE = path.resolve(INPUT_DIR, 'main.ts');
-const PLUGIN_JOI = path.resolve(INPUT_DIR, 'Plugins/Joi/main.ts');
+const PLUGINS = path.resolve(INPUT_DIR, 'Plugins');
 
-const webpackConfig = {
-    target: 'node',
-    mode: 'production',
-    entry: {
-        main: LAMBCYCLE,
-        joiPlugin: PLUGIN_JOI
-    },
-    output: {
-        path: OUTPUT_DIR,
-        filename: '[name].js',
-        libraryTarget: 'umd'
-    },
-    devtool: 'source-map',
-    resolve: {
-        extensions: ['.ts']
-    },
-    module: {
-        rules: [
-            {
-                test: /\.ts$/,
-                exclude: /node_modules/,
-                loader: 'ts-loader'
-            }
-        ]
-    },
-    plugins: [new PeerDepsExternalsPlugin()]
+const PLUGIN_JOI = path.resolve(PLUGINS, 'Joi/main.ts');
+const PLUGIN_BODY_PARSER = path.resolve(PLUGINS, 'BodyParser/main.ts');
+
+const addTrailing = (condition: boolean) => (fileName: string) =>
+    condition ? `${fileName}.min` : fileName;
+
+const webpackConfig = environment => {
+    const production = environment && environment.production;
+    const mode = production ? 'production' : 'development';
+    const isMinified = addTrailing(production);
+
+    return {
+        mode,
+        target: 'node',
+        entry: {
+            [isMinified('main')]: LAMBCYCLE,
+            [isMinified('plugin-joi')]: PLUGIN_JOI,
+            [isMinified('plugin-body-parser')]: PLUGIN_BODY_PARSER
+        },
+        output: {
+            path: OUTPUT_DIR,
+            filename: '[name].js',
+            libraryTarget: 'umd'
+        },
+        devtool: 'source-map',
+        resolve: {
+            extensions: ['.ts']
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.ts$/,
+                    exclude: /node_modules/,
+                    loader: 'ts-loader'
+                }
+            ]
+        },
+        plugins: [new PeerDepsExternalsPlugin()]
+    };
 };
 
 export default webpackConfig;
