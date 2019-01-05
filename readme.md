@@ -142,8 +142,9 @@ The lifecycle provides a clear guideline to reason about your needs. Every step 
 </p>
 
 # Plugins
-- [Joi](https://github.com/juliantellez/lambcycle/tree/master/src/Plugins/Joi): Object schema description language and validator for JavaScript objects.
 
+- [BodyParser](https://github.com/juliantellez/lambcycle/tree/master/src/Plugins/BodyParser): Parse incoming request bodies before your handler, available under the `handler.event.body` property.
+- [Joi](https://github.com/juliantellez/lambcycle/tree/master/src/Plugins/Joi): Object schema description language and validator for JavaScript objects. Validate request without the pain!
 
 # Creating a plugin 
 
