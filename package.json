@@ -10,6 +10,7 @@
   },
   "main": "dist/main.js",
   "scripts": {
+    "prepush": "sh config/husky/prepush.sh",
     "fmt": "prettier --config config/prettier/.prettierrc '**/*.ts' -l",
     "fmt:fix": "npm run fmt -- --write",
     "lint": "tslint -p tsconfig.json -c config/tslint/tslint.json",
@@ -19,29 +20,46 @@
     "test:coverage": "nyc npm run test",
     "test:bundlesize": "bundlesize",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "build": "rm -rf dist && webpack --config config/webpack/webpack.config.ts"
+    "build": "rm -rf dist && npm run build:dev && npm run build:prod",
+    "build:prod": "webpack --config config/webpack/webpack.config.ts --env.production",
+    "build:dev": "webpack --config config/webpack/webpack.config.ts"
   },
   "nyc": {
     "extends": "config/nyc/nycrc.json"
   },
   "bundlesize": [
     {
-      "path": "./dist/main.js",
-      "maxSize": "11 kB",
+      "path": "./dist/main.min.js",
+      "maxSize": "12 kB",
+      "compression": "none"
+    },
+    {
+      "path": "./dist/plugin-joi.min.js",
+      "maxSize": "3 kB",
+      "compression": "none"
+    },
+    {
+      "path": "./dist/plugin-body-parser.min.js",
+      "maxSize": "6 kB",
       "compression": "none"
     }
   ],
   "devDependencies": {
     "@types/aws-lambda": "^8.10.17",
+    "@types/body-parser": "^1.17.0",
     "@types/chai": "^4.1.7",
+    "@types/joi": "^14.0.1",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.18",
     "aws-lambda": "^0.1.2",
     "bundlesize": "^0.17.0",
     "chai": "^4.2.0",
     "coveralls": "^3.0.2",
+    "husky": "^1.3.1",
+    "joi": "^14.3.1",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0",
+    "peer-deps-externals-webpack-plugin": "^1.0.4",
     "prettier": "^1.15.3",
     "ts-loader": "^5.3.2",
     "ts-node": "^7.0.1",
@@ -50,6 +68,12 @@
     "typescript": "^3.2.2",
     "webpack": "^4.28.3",
     "webpack-cli": "^3.2.0"
+  },
+  "peerDependencies": {
+    "joi": "^14.3.1"
+  },
+  "dependencies": {
+    "content-type": "^1.0.4"
   },
   "keywords": [
     "lambda",

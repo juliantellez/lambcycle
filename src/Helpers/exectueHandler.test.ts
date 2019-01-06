@@ -7,7 +7,7 @@ import randomTimeout from '../Utils/randomTimeout';
 
 import executeHandler from './executeHandler';
 
-describe('executeHandler', () => {
+describe('ExecuteHandler', () => {
     it('should support async handlers', async () => {
         const handleError = () => null;
         const response = {

@@ -10,8 +10,8 @@
 
 import { Callback, Context } from 'aws-lambda';
 
-type ILambdaHandler = (
-    event: object,
+type ILambdaHandler<TEvent = any> = (
+    event: TEvent,
     context: Context,
     callback?: Callback<any> | any
 ) => any;

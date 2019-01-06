@@ -1,29 +1,15 @@
-import { Callback, Context } from 'aws-lambda';
+import { Callback } from 'aws-lambda';
 import { assert } from 'chai';
 
 import ILambdaHandler from './Interfaces/ILambdaHandler';
 import IWrapper from './Interfaces/IWrapper';
 import lambcycle from './main';
+import contextMock from './Mocks/Lambda/Context';
 import customError from './Utils/customError';
 import randomTimeout from './Utils/randomTimeout';
 
-const mockContext: Context = {
-    callbackWaitsForEmptyEventLoop: true,
-    functionName: '',
-    functionVersion: '',
-    invokedFunctionArn: '',
-    memoryLimitInMB: Math.random(),
-    awsRequestId: '',
-    logGroupName: '',
-    logStreamName: '',
-    getRemainingTimeInMillis: () => Math.random(),
-    done: () => void 0,
-    fail: () => void 0,
-    succeed: () => void 0
-};
-
-describe('middleware', () => {
-    describe('wrapper', () => {
+describe('Middleware', () => {
+    describe('Wrapper', () => {
         it('should create a handler wrapper', () => {
             const funcHandler = () => void 0;
 
@@ -34,23 +20,86 @@ describe('middleware', () => {
             assert.property(wrapper, 'register');
         });
 
-        it('should be able to register plugin functions', () => {
-            const funcHandler = () => void 0;
+        it('should accept a callback type lambdaHandler', async () => {
+            const handlerResponse = {
+                foo: 'baz'
+            };
+            const funcHandler: ILambdaHandler = (_, __, callback) => {
+                callback(null, handlerResponse);
+            };
 
-            const wrapper = lambcycle(funcHandler).register([
-                {
-                    plugin: {
-                        onRequest: () => null
-                    }
-                }
-            ]);
+            const wrapper = lambcycle(funcHandler);
 
-            const value = wrapper.plugins.onRequest;
-            const expected = 1;
+            await wrapper({}, contextMock, (_, response) => {
+                const value = response;
+                const expected = handlerResponse;
 
-            assert.lengthOf(value, expected);
+                assert.deepEqual(value, expected);
+            });
         });
 
+        it('should accept a async type lambdaHandler', async () => {
+            const handlerResponse = {
+                foo: 'baz'
+            };
+            const funcHandler = async () => {
+                return await randomTimeout().then(() => handlerResponse);
+            };
+
+            const wrapper = lambcycle(funcHandler);
+
+            await wrapper({}, contextMock, (_, response) => {
+                const value = response;
+                const expected = handlerResponse;
+
+                assert.deepEqual(value, expected);
+            });
+        });
+
+        it('should accept a promise type lambdaHandler', async () => {
+            const handlerResponse = {
+                foo: 'baz'
+            };
+            const funcHandler = () => {
+                return randomTimeout().then(() => handlerResponse);
+            };
+
+            const wrapper = lambcycle(funcHandler);
+
+            await wrapper({}, contextMock, (_, response) => {
+                const value = response;
+                const expected = handlerResponse;
+
+                assert.deepEqual(value, expected);
+            });
+        });
+
+        it('should accept a sync type lambdaHandler', async () => {
+            /**
+             * NB:
+             * Sync handlers should not return undefined!
+             * the handler will interpret undefined as a callback type handler
+             * and your function may stall for a long time!!
+             */
+
+            const handlerResponse = {
+                foo: 'baz'
+            };
+
+            const funcHandler = () => handlerResponse;
+
+            const wrapper = lambcycle(funcHandler);
+
+            await wrapper({}, contextMock, (_, response) => {
+                const value = response;
+                const expected = handlerResponse;
+
+                assert.deepEqual(value, expected);
+            });
+        });
+    });
+
+    describe('Plugins', () => {
         it('should be able to pass configuration to plugins declaratively', () => {
             const funcHandler = () => void 0;
 
@@ -70,7 +119,7 @@ describe('middleware', () => {
             assert.lengthOf(wrapper.plugins.onAuth, 1);
 
             const value = pluginManifest.config;
-            const expected = wrapper.plugins.onAuth[0]();
+            const expected: any = wrapper.plugins.onAuth[0](wrapper, {});
 
             assert.deepEqual(value, expected);
         });
@@ -101,7 +150,7 @@ describe('middleware', () => {
             const funcHandler = () => null;
             const wrapper = lambcycle(funcHandler).register([pluginManifest]);
 
-            await wrapper({}, {}, () => {
+            await wrapper({}, contextMock, () => {
                 const value = wrapperHook;
                 const expected = [
                     'onRequest',
@@ -151,7 +200,7 @@ describe('middleware', () => {
             const funcHandler = () => null;
             const wrapper = lambcycle(funcHandler).register([pluginManifest]);
 
-            await wrapper({}, {}, () => {
+            await wrapper({}, contextMock, () => {
                 const value = wrapperHook;
                 const expected = [
                     'onRequest',
@@ -201,7 +250,7 @@ describe('middleware', () => {
             const funcHandler = () => null;
             const wrapper = lambcycle(funcHandler).register([pluginManifest]);
 
-            await wrapper({}, {}, () => {
+            await wrapper({}, contextMock, () => {
                 const value = wrapperHook;
                 const expected = [
                     'onRequest',
@@ -214,257 +263,317 @@ describe('middleware', () => {
                 assert.deepEqual(value, expected);
             });
         });
+    });
 
-        it('should allow plugins to invoke the error handler', async () => {
-            const pluginError = new Error('foo');
+    describe('Register', () => {
+        it('should be able to register plugins', () => {
+            const funcHandler = () => void 0;
 
-            const pluginManifest = {
-                plugin: {
-                    onRequest: (_, __, handleError: Callback) => {
-                        handleError(pluginError);
+            const wrapper = lambcycle(funcHandler).register([
+                {
+                    plugin: {
+                        onRequest: () => null
                     }
                 }
-            };
+            ]);
 
-            const funcHandler = () => null;
-            const wrapper = lambcycle(funcHandler).register([pluginManifest]);
+            const value = wrapper.plugins.onRequest;
+            const expected = 1;
 
-            await wrapper({}, {}, error => {
-                const value = error;
-                const expected = pluginError;
-                assert.deepEqual(value, expected);
-            });
-        });
-
-        it('should pass errors to error plugins', async () => {
-            const errorValue = [customError('foo'), customError('baz')];
-
-            const errorExpected: Error[] = [];
-
-            const pluginManifest = {
-                plugin: {
-                    onPreHandler: () => {
-                        return randomTimeout(10)
-                            .then(() => randomTimeout(10))
-                            .then(() => {
-                                throw errorValue[0];
-                            });
-                    },
-                    onPostHandler: async () => {
-                        await randomTimeout(20);
-                        throw errorValue[1];
-                    },
-                    onError: async (innerWrapper: IWrapper) => {
-                        await randomTimeout();
-                        errorExpected.push(innerWrapper.error);
-                    }
-                }
-            };
-
-            const funcHandler = () => null;
-            const wrapper = lambcycle(funcHandler).register([pluginManifest]);
-
-            await wrapper({}, {}, () => {
-                const value = errorValue;
-                const expected = errorExpected;
-
-                assert.deepEqual(value, expected);
-                assert.deepEqual(errorValue, errorExpected);
-            });
-        });
-
-        it('should accept a callback type lambdaHandler', async () => {
-            const handlerResponse = {
-                foo: 'baz'
-            };
-            const funcHandler: ILambdaHandler = (_, __, callback) => {
-                callback(null, handlerResponse);
-            };
-
-            const wrapper = lambcycle(funcHandler);
-
-            await wrapper({}, mockContext, (_, response) => {
-                const value = response;
-                const expected = handlerResponse;
-
-                assert.deepEqual(value, expected);
-            });
-        });
-
-        it('should accept a async type lambdaHandler', async () => {
-            const handlerResponse = {
-                foo: 'baz'
-            };
-            const funcHandler = async () => {
-                return await randomTimeout().then(() => handlerResponse);
-            };
-
-            const wrapper = lambcycle(funcHandler);
-
-            await wrapper({}, mockContext, (_, response) => {
-                const value = response;
-                const expected = handlerResponse;
-
-                assert.deepEqual(value, expected);
-            });
-        });
-
-        it('should accept a promise type lambdaHandler', async () => {
-            const handlerResponse = {
-                foo: 'baz'
-            };
-            const funcHandler = () => {
-                return randomTimeout().then(() => handlerResponse);
-            };
-
-            const wrapper = lambcycle(funcHandler);
-
-            await wrapper({}, mockContext, (_, response) => {
-                const value = response;
-                const expected = handlerResponse;
-
-                assert.deepEqual(value, expected);
-            });
-        });
-
-        it('should accept a sync type lambdaHandler', async () => {
-            const handlerResponse = {
-                foo: 'baz'
-            };
-
-            const funcHandler = () => handlerResponse;
-
-            const wrapper = lambcycle(funcHandler);
-
-            await wrapper({}, mockContext, (_, response) => {
-                const value = response;
-                const expected = handlerResponse;
-
-                assert.deepEqual(value, expected);
-            });
-        });
-
-        it('should catch async errors in handler', async () => {
-            const handlerError = customError('foo');
-            const funcHandler = async () => {
-                return await randomTimeout().then(() => {
-                    throw handlerError;
-                });
-            };
-
-            const wrapper = lambcycle(funcHandler);
-
-            await wrapper({}, mockContext, error => {
-                const value = error;
-                const expected = handlerError;
-
-                assert.deepEqual(value, expected);
-            });
-        });
-
-        it('should catch promise errors in handler', async () => {
-            const handlerError = customError('foo');
-            const funcHandler = () => {
-                return randomTimeout(100).then(() => {
-                    throw handlerError;
-                });
-            };
-
-            const wrapper = lambcycle(funcHandler);
-
-            await wrapper({}, mockContext, error => {
-                const value = error;
-                const expected = handlerError;
-
-                assert.deepEqual(value, expected);
-            });
-        });
-
-        it('should catch callback errors in handler', async () => {
-            const handlerError = customError('foo');
-            const funcHandler = (_, __, callback) => {
-                callback(handlerError);
-            };
-
-            const wrapper = lambcycle(funcHandler);
-
-            await wrapper({}, mockContext, error => {
-                const value = error;
-                const expected = handlerError;
-
-                assert.deepEqual(value, expected);
-            });
-        });
-
-        it('should catch sync errors in handler', async () => {
-            const handlerError = customError('foo');
-            const funcHandler = () => {
-                throw handlerError;
-            };
-
-            const wrapper = lambcycle(funcHandler);
-
-            await wrapper({}, mockContext, error => {
-                const value = error;
-                const expected = handlerError;
-
-                assert.deepEqual(value, expected);
-            });
-        });
-
-        it('should handle handler errors asynchronously', async () => {
-            const handlerError = customError('foo');
-
-            const errorHandlers: string[] = [];
-            const reporter = {
-                plugin: {
-                    onError: async () => {
-                        await randomTimeout();
-                        errorHandlers.push('reporter');
-                    }
-                }
-            };
-
-            const logger = {
-                plugin: {
-                    onError: async () => {
-                        await randomTimeout();
-                        errorHandlers.push('logger');
-                    }
-                }
-            };
-
-            const funcHandler = () => {
-                throw handlerError;
-            };
-            const wrapper = lambcycle(funcHandler).register([reporter, logger]);
-
-            await wrapper({}, mockContext, () => {
-                const value = errorHandlers;
-                const expected = ['reporter', 'logger'];
-
-                assert.deepEqual(value, expected);
-            });
+            assert.lengthOf(value, expected);
         });
     });
 
-    describe('register', () => {
-        it('should throw if no plugin is supplied', () => {
-            const funcHandler = () => null;
+    describe('Errors', () => {
+        describe('Wrapper', () => {
+            it('should catch async errors in handler', async () => {
+                const handlerError = customError('foo');
+                const funcHandler = async () => {
+                    return await randomTimeout().then(() => {
+                        throw handlerError;
+                    });
+                };
 
-            assert.throws(() => lambcycle(funcHandler).register());
-            assert.throws(() => lambcycle(funcHandler).register([]));
+                const wrapper = lambcycle(funcHandler);
+
+                await wrapper({}, contextMock, error => {
+                    const value = error;
+                    const expected = handlerError;
+
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('should catch promise errors in handler', async () => {
+                const handlerError = customError('foo');
+                const funcHandler = () => {
+                    return randomTimeout(100).then(() => {
+                        throw handlerError;
+                    });
+                };
+
+                const wrapper = lambcycle(funcHandler);
+
+                await wrapper({}, contextMock, error => {
+                    const value = error;
+                    const expected = handlerError;
+
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('should catch callback errors in handler', async () => {
+                const handlerError = customError('foo');
+                const funcHandler = (_, __, callback) => {
+                    callback(handlerError);
+                };
+
+                const wrapper = lambcycle(funcHandler);
+
+                await wrapper({}, contextMock, error => {
+                    const value = error;
+                    const expected = handlerError;
+
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('should catch sync errors in handler', async () => {
+                const handlerError = customError('foo');
+                const funcHandler = () => {
+                    throw handlerError;
+                };
+
+                const wrapper = lambcycle(funcHandler);
+
+                await wrapper({}, contextMock, error => {
+                    const value = error;
+                    const expected = handlerError;
+
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('should handle handler errors asynchronously', async () => {
+                const handlerError = customError('foo');
+
+                const errorHandlers: string[] = [];
+                const reporter = {
+                    plugin: {
+                        onError: async () => {
+                            await randomTimeout();
+                            errorHandlers.push('reporter');
+                        }
+                    }
+                };
+
+                const logger = {
+                    plugin: {
+                        onError: async () => {
+                            await randomTimeout();
+                            errorHandlers.push('logger');
+                        }
+                    }
+                };
+
+                const funcHandler = () => {
+                    throw handlerError;
+                };
+
+                const wrapper = lambcycle(funcHandler).register([
+                    reporter,
+                    logger
+                ]);
+
+                await wrapper({}, contextMock, () => {
+                    const value = errorHandlers;
+                    const expected = ['reporter', 'logger'];
+
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('should call the lambdaCallback only once', async () => {
+                const error = customError('a');
+
+                const pluginManifest = {
+                    plugin: {
+                        onPreHandler: () => {
+                            return randomTimeout(10)
+                                .then(() => randomTimeout(10))
+                                .then(() => {
+                                    throw customError('a');
+                                });
+                        },
+                        onPostHandler: async () => {
+                            await randomTimeout(20);
+                            throw customError('b');
+                        }
+                    }
+                };
+
+                const funcHandler = () => {
+                    throw customError('c');
+                };
+
+                const wrapper = lambcycle(funcHandler).register([
+                    pluginManifest
+                ]);
+
+                let counter = 0;
+                await wrapper({}, contextMock, e => {
+                    counter += 1;
+
+                    const value = counter;
+                    const expected = 1;
+
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('should call errorHandler plugins only once', async () => {
+                let counter = 0;
+
+                const asyncPlugin = {
+                    plugin: {
+                        onPreHandler: () => {
+                            return randomTimeout(10)
+                                .then(() => randomTimeout(10))
+                                .then(() => {
+                                    throw customError('a');
+                                });
+                        }
+                    }
+                };
+
+                const errorPlugin = {
+                    plugin: {
+                        onError: async () => {
+                            await randomTimeout(20);
+                            counter += 1;
+                        }
+                    }
+                };
+
+                const loggerPlugin = {
+                    plugin: {
+                        onError: async () => {
+                            await randomTimeout(20);
+                            counter += 1;
+                        }
+                    }
+                };
+
+                const funcHandler = () => {
+                    throw customError('c');
+                };
+
+                const wrapper = lambcycle(funcHandler).register([
+                    asyncPlugin,
+                    errorPlugin,
+                    loggerPlugin
+                ]);
+
+                await wrapper({}, contextMock, e => {
+                    const value = counter;
+                    const expected = 2;
+
+                    assert.deepEqual(value, expected);
+                });
+            });
         });
-        it('should throw if plugin hook does not exist', () => {
-            const funcHandler = () => null;
 
-            const logger = {
-                plugin: {
-                    randomHook: () => null
-                }
-            };
+        describe('Plugins', () => {
+            it('should allow plugins to invoke the handleError callback', async () => {
+                const pluginError = new Error('foo');
 
-            assert.throws(() => lambcycle(funcHandler).register([logger]));
+                const pluginManifest = {
+                    plugin: {
+                        onRequest: (_, __, handleError: Callback) => {
+                            handleError(pluginError);
+                        }
+                    }
+                };
+
+                const funcHandler = () => null;
+                const wrapper = lambcycle(funcHandler).register([
+                    pluginManifest
+                ]);
+
+                await wrapper({}, contextMock, error => {
+                    const value = error;
+                    const expected = pluginError;
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('should pass errors to error plugins', async () => {
+                const errorValue = [customError('foo'), customError('baz')];
+
+                const errorExpected: Error[] = [];
+
+                const pluginManifest = {
+                    plugin: {
+                        onPreHandler: () => {
+                            return randomTimeout(10)
+                                .then(() => randomTimeout(10))
+                                .then(() => {
+                                    throw errorValue[0];
+                                });
+                        },
+                        onPostHandler: async () => {
+                            await randomTimeout(20);
+                            throw errorValue[1];
+                        },
+                        onError: async (innerWrapper: IWrapper) => {
+                            await randomTimeout();
+                            errorExpected.push(innerWrapper.error);
+                        }
+                    }
+                };
+
+                const funcHandler = () => null;
+                const wrapper = lambcycle(funcHandler).register([
+                    pluginManifest
+                ]);
+
+                await wrapper({}, contextMock, () => {
+                    const value = errorValue[0];
+                    const expected = errorExpected[0];
+
+                    assert.deepEqual(value, expected);
+                });
+            });
+        });
+
+        describe('Register', () => {
+            it('should throw if no plugin is supplied', () => {
+                const funcHandler = () => null;
+
+                assert.throws(() => lambcycle(funcHandler).register([]));
+            });
+
+            it('should throw if plugin hook does not exist', () => {
+                const funcHandler = () => null;
+
+                const logger = {
+                    plugin: {}
+                };
+
+                assert.throws(() => lambcycle(funcHandler).register([logger]));
+            });
+
+            it('should throw if plugin hook name is invalid', () => {
+                const funcHandler = () => null;
+
+                const logger = {
+                    plugin: {}
+                };
+
+                logger.plugin['foo'] = () => null;
+
+                assert.throws(() => lambcycle(funcHandler).register([logger]));
+            });
         });
     });
 });
