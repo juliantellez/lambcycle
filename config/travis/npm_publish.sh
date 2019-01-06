@@ -46,8 +46,9 @@ UPDATE_PACKAGE_VERSION=task/update_package_version_$(git log --pretty=format:'%h
 git checkout -b $UPDATE_PACKAGE_VERSION
 
 echo "[ LOG ] Push to origin:"
-git push origin $UPDATE_PACKAGE_VERSION
+git push origin $UPDATE_PACKAGE_VERSION --no-verify
 git push origin --tags --no-verify
 
+echo "[ LOG ] Publishing to npm:"
 # PUBLISH
 npm publish
