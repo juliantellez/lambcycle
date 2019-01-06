@@ -9,6 +9,8 @@ const executeHandler = async (
     wrapper: IWrapper,
     handleError: Callback
 ) => {
+    if (wrapper.error) return;
+
     const addResponseToWrapper = (response: any) => {
         wrapper.response = response;
     };

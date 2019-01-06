@@ -2,7 +2,7 @@ import { assert } from 'chai';
 
 import toLowerCaseShallow from './toLowerCaseShallow';
 
-describe('toLowerCaseShallow', () => {
+describe('ToLowerCaseShallow', () => {
     it('should reduce obj to lowercase', () => {
         const obj = {
             FOO: 'BAZ',

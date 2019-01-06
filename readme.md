@@ -70,6 +70,7 @@
  - [Install](#install)
  - [Introduction](#Introduction)
  - [Handler Lifecycle](#Handler-lifecycle)
+ - [Error Handling](#Error-handling)
  - [Plugins](#plugins)
  - [Creating a Plugin](#creating-a-plugin)
  - [Using a Plugin](#using-a-plugin)
@@ -140,6 +141,40 @@ The lifecycle provides a clear guideline to reason about your needs. Every step 
 <p align="center">
 <img src="https://raw.githubusercontent.com/juliantellez/lambcycle/master/assets/lifecycle.svg?sanitize=true" height=500>
 </p>
+
+# Error Handling
+As you can see from the lifecycle graph above, the error object is a first class citizen that will stop the cycle and execute any error plugins declared in the register, it will then proceed to call the lambda handler's callback.
+Have a look at the [Wrapper Interface](https://github.com/juliantellez/lambcycle/blob/master/src/Interfaces/IWrapper.ts) to see what's available for reporting.
+
+`HINT: pretty much everything.`
+
+```javascript
+import lambcycle from 'lambcycle'
+import notifyError from './myErrorNofifier'
+
+const appLogic = async(event, context) => {
+    const {error, data} = await amazingJob()
+    if(error) {
+        throw error
+    }
+}
+
+const errorNotifier = {
+    plugin: {
+        onError: async (handler) => {
+            /**
+             * See IWrapper interface
+            */
+            await notifyError(handler.error)
+        }
+    }
+}
+
+const handler = lambcycle(appLogic).register([errorNotifier])
+
+export default handler;
+```
+
 
 # Plugins
 
