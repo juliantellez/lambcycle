@@ -10,6 +10,7 @@ before_install:
   - sh ./config/travis/before_install.sh $encrypted_211c569d59a1_key $encrypted_211c569d59a1_iv
 
 script:
+  - cat ./assets/lambcycle.txt
   - npm run fmt
   - npm run lint
   - npm run test:coverage
