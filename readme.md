@@ -93,7 +93,7 @@ yarn add lambcycle
 Lambcycle is a middleware for lambda functions. It defines a configurable life-cycle and allows you to focus on your application's logic. It has a "Feature as Plugin" approach, so you can easily create your own plugins or reuse your favorite packages with very little effort 🐑 🛵.
 
 Checkout the following example or follow the link to
-[🎉 see some actual code 🎉 ](https://github.com/juliantellez/lambcycle/tree/master/examples).
+[🎉 see some actual code 🎉 ](https://github.com/juliantellez/lambcycle/tree/develop/examples).
 
 
 ```javascript
