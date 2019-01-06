@@ -10,6 +10,7 @@
   },
   "main": "dist/main.js",
   "scripts": {
+    "prepush": "sh config/husky/prepush.sh",
     "fmt": "prettier --config config/prettier/.prettierrc '**/*.ts' -l",
     "fmt:fix": "npm run fmt -- --write",
     "lint": "tslint -p tsconfig.json -c config/tslint/tslint.json",
@@ -54,6 +55,7 @@
     "bundlesize": "^0.17.0",
     "chai": "^4.2.0",
     "coveralls": "^3.0.2",
+    "husky": "^1.3.1",
     "joi": "^14.3.1",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0",
