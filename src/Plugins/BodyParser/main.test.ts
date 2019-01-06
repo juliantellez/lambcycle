@@ -70,7 +70,7 @@ describe('Plugin: bodyParser', () => {
         await middleware({}, lambdaContextMock, e => {
             // @ts-ignore
             const value = e.type;
-            const expected = ErrorTypes.BODY_PARSER_OPTION_FORBIDDEN;
+            const expected = ErrorTypes.BODY_PARSER_OPTION_TYPE_INVALID;
 
             assert.equal(value, expected);
         });

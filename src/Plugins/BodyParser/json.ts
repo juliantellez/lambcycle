@@ -13,7 +13,7 @@ const jsonParser = (handler: IWrapper) => {
 
     if (!request.headers) {
         throw createError({
-            type: ErrorTypes.BODY_PARSER_MISSING_REQUEST_HEADERS
+            type: ErrorTypes.BODY_PARSER_REQUEST_HEADERS_MISSING
         });
     }
 
@@ -24,7 +24,7 @@ const jsonParser = (handler: IWrapper) => {
         content = contentType.parse(handler.event);
     } catch (e) {
         throw createError({
-            type: ErrorTypes.BODY_PARSER_HEADERS_CONTENT_TYPE_INVALID,
+            type: ErrorTypes.BODY_PARSER_REQUEST_HEADERS_CONTENT_TYPE_KEY_INVALID,
             details: RequestHeaders.CONTENT_TYPE,
             source: e
         });
@@ -32,7 +32,7 @@ const jsonParser = (handler: IWrapper) => {
 
     if (content.type !== ContentType.APPLICATION_JSON) {
         throw createError({
-            type: ErrorTypes.BODY_PARSER_JSON_INVALID_CONTENT_TYPE,
+            type: ErrorTypes.BODY_PARSER_REQUEST_HEADERS_CONTENT_TYPE_VALUE_INVALID,
             details: content.type
         });
     }

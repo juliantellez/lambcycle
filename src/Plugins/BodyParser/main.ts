@@ -9,7 +9,7 @@ import IPluginConfig from './Interfaces/IPluginConfig';
 const validate = (config: IPluginConfig) => {
     if (!Object['values'](ParsingOption).includes(config.type)) {
         return createError({
-            type: ErrorTypes.BODY_PARSER_OPTION_FORBIDDEN,
+            type: ErrorTypes.BODY_PARSER_OPTION_TYPE_INVALID,
             details: 'one of json|raw|text|urlencoded'
         });
     }
