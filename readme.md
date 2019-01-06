@@ -70,6 +70,7 @@
  - [Install](#install)
  - [Introduction](#Introduction)
  - [Handler Lifecycle](#Handler-lifecycle)
+ - [Plugins](#plugins)
  - [Creating a Plugin](#creating-a-plugin)
  - [Using a Plugin](#using-a-plugin)
  - [About the project](#about-the-project)
@@ -139,6 +140,11 @@ The lifecycle provides a clear guideline to reason about your needs. Every step 
 <p align="center">
 <img src="https://raw.githubusercontent.com/juliantellez/lambcycle/master/assets/lifecycle.svg?sanitize=true" height=500>
 </p>
+
+# Plugins
+
+- [BodyParser](https://github.com/juliantellez/lambcycle/tree/master/src/Plugins/BodyParser): Parse incoming request bodies before your handler, available under the `handler.event.body` property.
+- [Joi](https://github.com/juliantellez/lambcycle/tree/master/src/Plugins/Joi): Object schema description language and validator for JavaScript objects. Validate requests without the pain!
 
 # Creating a plugin 
 

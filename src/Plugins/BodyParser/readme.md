@@ -1,20 +1,18 @@
-# Joi Plugin
+# Body Parser Plugin
 
-<p align="center">
-<a href="https://github.com/hapijs/joi" target="_blank">
-<img src="https://camo.githubusercontent.com/9c20f86ee4df5f043a36e0bfc1ff6f5bc40e8401/68747470733a2f2f7261772e6769746875622e636f6d2f686170696a732f6a6f692f6d61737465722f696d616765732f6a6f692e706e67">
-</a>
-</p>
+Inspired by the amazing [express body parser](https://github.com/expressjs/body-parser) and [content type](https://github.com/jshttp/content-type) modules
+
+Parse incoming request bodies before your handler, available under the handler.event.body property. This Plugin is attached to the [Request Cycle](https://github.com/juliantellez/lambcycle#handler-lifecycle) hook.
 
 
-Object schema description language and validator for JavaScript objects. This Plugin is attached to the [Request Cycle](https://github.com/juliantellez/lambcycle#handler-lifecycle) hook.
 
 ```
-joiPlugin.js: 2.02KB (no compression) ❤️
+plugin-body-parser.min.js: 5.61KB (no compression) ❤️
 ```
 
 
 - [Install](#install)
+- [Parsers](#parsers)
 - [Using the Plugin](#using-the-plugin)
 - [Considerations](#considerations)
 - [Contributing](#contributing)
@@ -25,52 +23,41 @@ joiPlugin.js: 2.02KB (no compression) ❤️
 
 ```bash
 # with npm
-npm install --save lambcycle joi
+npm install --save lambcycle
 
 # with yarn
-yarn add lambcycle joi
+yarn add lambcycle
 ```
+
+# Parsers
+- [JSON Body Parser](https://github.com/expressjs/body-parser#bodyparserjsonoptions)
+- TODO: raw|text|urlencoded
 
 # Using the plugin
 
 ```javascript
-import Joi from 'joi'
 import lambcycle from 'lambcycle'
-import joiPlugin from 'lambcycle/dist/plugin-joi'
+import bodyParserPlugin from 'lambcycle/dist/plugin-body-parser'
 
 const appLogic = async (event, context) => {
-    await amazingOperation()
+    await amazingOperation(event.body)
 }
 
-const schema = Joi.object().keys({
-    important: Joi.string().required(),
-    data: Joi.number().required()
-});
+const bodyParserConfig = {
+    type: 'json'
+};
 
 const handler = lambcycle(appLogic).register([
-    joiPlugin(schema)
+    bodyParserPlugin(bodyParserConfig)
 ]);
 
 ```
 
 # Considerations
 
-- should only provide a valid Joi.Schema
+- The initial idea was too attach the actual body-parser module from express. However since we don't need streams here, as the data is already available, it made more sense to extract just the parsing section. enjoy!
 
-```javascript
-
-// bad
-const schema = {
-    foo: Joi.string().required(),
-};
-
-// good
- const schema = Joi.object().keys({
-    foo: Joi.string().required()
-});
-```
-
-- As long as its supported by Joi, it should be valid in the plugin.
+- This plugin relies on content-type to parse the headers.
 
 # Contributing
 As you can see the possibilities are endless when it comes to plugins! Everyone is welcome to [contribute](https://github.com/juliantellez/lambcycle/blob/develop/contributing.md)! Feel free to create [issues](https://github.com/juliantellez/labmcycle/issues) or [prs](https://github.com/juliantellez/labmcycle/pulls).

@@ -4,8 +4,8 @@ import ILifeCyclePlugins from './ILifeCyclePlugins';
 import IPluginManifest from './IPluginManifest';
 
 interface IWrapper {
-    (
-        lambdaEvent: object,
+    <TEvent = any>(
+        lambdaEvent: TEvent,
         lambdaContext: Context,
         lambdaCallback: Callback
     ): any;
