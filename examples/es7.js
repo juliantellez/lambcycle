@@ -3,11 +3,14 @@ import lambcycle from 'lambcycle'
 import joiPlugin from 'lambcycle/dist/plugin-joi'
 import bodyParser from 'lambcycle/dist/plugin-body-parser'
 
-const applicationLogic = (event, context) => {
-    const response = {}
+const applicationLogic = async(event, context) => {
+    const {error, data} = await Promise.resolve({data: 'hooray'})
 
-    return Promise.resolve()
-        .then(() => response);
+    if(error) {
+        throw error
+    }
+
+    return data;
 };
 
 const schema = Joi.object().keys({
