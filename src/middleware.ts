@@ -6,6 +6,7 @@ import {
     PostHandlerLifeCycleHooks,
     PreHandlerLifeCycleHooks
 } from './Constants/PluginLifeCycle';
+import PluginType from './Constants/PluginType';
 import executeHandler from './Helpers/executeHandler';
 import executePlugins from './Helpers/executePlugins';
 import ILambdaHandler from './Interfaces/ILambdaHandler';
@@ -13,6 +14,7 @@ import ILifeCyclePlugins from './Interfaces/ILifeCyclePlugins';
 import IPluginHookFunction from './Interfaces/IPluginHookFunction';
 import IPluginManifest from './Interfaces/IPluginManifest';
 import IWrapper from './Interfaces/IWrapper';
+import callOnce from './Utils/callOnce';
 import createError from './Utils/createError';
 
 const preHandlerHookList = Object['values'](PreHandlerLifeCycleHooks);
@@ -88,15 +90,22 @@ const middleware = (lambdaHandler: ILambdaHandler) => {
             wrapper.error = null;
             wrapper.response = null;
 
-            const errorHandler: Callback = async error => {
+            const executeLambdaCallback = callOnce(() =>
+                lambdaCallback(wrapper.error, wrapper.response)
+            );
+
+            const errorHandler: Callback = callOnce(async (error: Error) => {
                 wrapper.error = error;
 
                 await executePlugins(
                     wrapper.plugins.onError,
                     wrapper,
-                    lambdaCallback
+                    lambdaCallback,
+                    PluginType.ERROR
                 );
-            };
+
+                return executeLambdaCallback();
+            });
 
             for (const index in preHandlerHookList) {
                 await executePlugins(
@@ -116,7 +125,7 @@ const middleware = (lambdaHandler: ILambdaHandler) => {
                 );
             }
 
-            return lambdaCallback(wrapper.error, wrapper.response);
+            return executeLambdaCallback();
         }
     );
 
