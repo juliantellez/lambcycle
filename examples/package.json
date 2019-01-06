@@ -8,10 +8,8 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "lambcycle": "^0.2.0"
-  },
   "dependencies": {
-    "joi": "^14.3.1"
+    "joi": "^14.3.1",
+    "lambcycle": "^0.2.0"
   }
 }
