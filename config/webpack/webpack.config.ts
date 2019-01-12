@@ -1,4 +1,5 @@
 import * as path from 'path';
+import * as webpack from 'webpack';
 import * as PeerDepsExternalsPlugin from 'peer-deps-externals-webpack-plugin';
 
 const INPUT_DIR = path.resolve(__dirname, '../../src');
@@ -13,7 +14,7 @@ const PLUGIN_BODY_PARSER = path.resolve(PLUGINS, 'BodyParser/main.ts');
 const addTrailing = (condition: boolean) => (fileName: string) =>
     condition ? `${fileName}.min` : fileName;
 
-const webpackConfig = environment => {
+const webpackConfig = (environment): webpack.Configuration => {
     const production = environment && environment.production;
     const mode = production ? 'production' : 'development';
     const isMinified = addTrailing(production);
@@ -29,7 +30,7 @@ const webpackConfig = environment => {
         output: {
             path: OUTPUT_DIR,
             filename: '[name].js',
-            libraryTarget: 'umd'
+            libraryTarget: 'commonjs'
         },
         devtool: 'source-map',
         resolve: {
