@@ -1,6 +1,6 @@
 import * as path from 'path';
-import * as webpack from 'webpack';
 import * as PeerDepsExternalsPlugin from 'peer-deps-externals-webpack-plugin';
+import * as webpack from 'webpack';
 
 const INPUT_DIR = path.resolve(__dirname, '../../src');
 const OUTPUT_DIR = path.resolve(__dirname, '../../dist');
