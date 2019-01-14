@@ -139,7 +139,7 @@ export default handler;
 The lifecycle provides a clear guideline to reason about your needs. Every step of the cycle can handle or throw errors making it easy to log, report or debug.
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/juliantellez/lambcycle/master/assets/lifecycle.svg?sanitize=true" height=500>
+<img src="https://raw.githubusercontent.com/juliantellez/lambcycle/develop/assets/lifecycle.svg?sanitize=true" height=500>
 </p>
 
 # Error Handling
