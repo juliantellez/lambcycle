@@ -9,7 +9,6 @@ HandlerWrapper.event = {};
 HandlerWrapper.callback = () => null;
 HandlerWrapper.plugins = {
     onRequest: [],
-    onAuth: [],
     onPreHandler: [],
     onPostHandler: [],
     onPreResponse: [],

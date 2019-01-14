@@ -4,7 +4,6 @@ type IPluginHookList = Array<(wrapper: IWrapper, options: object) => void>;
 
 interface ILifeCyclePlugins {
     onRequest: IPluginHookList;
-    onAuth: IPluginHookList;
     onPreHandler: IPluginHookList;
     onPostHandler: IPluginHookList;
     onPreResponse: IPluginHookList;

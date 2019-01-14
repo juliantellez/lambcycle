@@ -1,6 +1,5 @@
 enum PreHandlerLifeCycleHooks {
     ON_REQUEST = 'onRequest',
-    ON_AUTH = 'onAuth',
     ON_PRE_HANDLER = 'onPreHandler'
 }
 
@@ -11,7 +10,6 @@ enum PostHandlerLifeCycleHooks {
 
 enum PluginLifeCycleHooks {
     ON_REQUEST = 'onRequest',
-    ON_AUTH = 'onAuth',
     ON_PRE_HANDLER = 'onPreHandler',
     ON_POST_HANDLER = 'onPostHandler',
     ON_PRE_RESPONSE = 'onPreResponse',
