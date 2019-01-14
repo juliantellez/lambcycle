@@ -105,7 +105,7 @@ describe('Middleware', () => {
 
             const pluginManifest = {
                 plugin: {
-                    onAuth: (_, config: object) => config
+                    onRequest: (_, config: object) => config
                 },
                 config: {
                     string: 'foo',
@@ -116,10 +116,10 @@ describe('Middleware', () => {
 
             const wrapper = lambcycle(funcHandler).register([pluginManifest]);
 
-            assert.lengthOf(wrapper.plugins.onAuth, 1);
+            assert.lengthOf(wrapper.plugins.onRequest, 1);
 
             const value = pluginManifest.config;
-            const expected: any = wrapper.plugins.onAuth[0](wrapper, {});
+            const expected: any = wrapper.plugins.onRequest[0](wrapper, {});
 
             assert.deepEqual(value, expected);
         });
@@ -131,9 +131,6 @@ describe('Middleware', () => {
                 plugin: {
                     onRequest: () => {
                         wrapperHook.push('onRequest');
-                    },
-                    onAuth: () => {
-                        wrapperHook.push('onAuth');
                     },
                     onPreHandler: () => {
                         wrapperHook.push('onPreHandler');
@@ -154,7 +151,6 @@ describe('Middleware', () => {
                 const value = wrapperHook;
                 const expected = [
                     'onRequest',
-                    'onAuth',
                     'onPreHandler',
                     'onPostHandler',
                     'onPreResponse'
@@ -172,10 +168,6 @@ describe('Middleware', () => {
                     onRequest: async () => {
                         await randomTimeout(5);
                         wrapperHook.push('onRequest');
-                    },
-                    onAuth: async () => {
-                        await randomTimeout(5);
-                        wrapperHook.push('onAuth');
                     },
                     onPreHandler: () => {
                         return randomTimeout(5)
@@ -204,7 +196,6 @@ describe('Middleware', () => {
                 const value = wrapperHook;
                 const expected = [
                     'onRequest',
-                    'onAuth',
                     'onPreHandler',
                     'onPostHandler',
                     'onPreResponse'
@@ -221,10 +212,6 @@ describe('Middleware', () => {
                 plugin: {
                     onRequest: () => {
                         wrapperHook.push('onRequest');
-                    },
-                    onAuth: async () => {
-                        await randomTimeout();
-                        wrapperHook.push('onAuth');
                     },
                     onPreHandler: () => {
                         return randomTimeout()
@@ -254,7 +241,6 @@ describe('Middleware', () => {
                 const value = wrapperHook;
                 const expected = [
                     'onRequest',
-                    'onAuth',
                     'onPreHandler',
                     'onPostHandler',
                     'onPreResponse'

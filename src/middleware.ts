@@ -23,7 +23,6 @@ const postHandlerHookList = Object['values'](PostHandlerLifeCycleHooks);
 const middleware = (lambdaHandler: ILambdaHandler) => {
     const plugins: ILifeCyclePlugins = {
         onRequest: [],
-        onAuth: [],
         onPreHandler: [],
         onPostHandler: [],
         onPreResponse: [],
