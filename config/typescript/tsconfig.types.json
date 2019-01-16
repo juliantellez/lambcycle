@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "moduleResolution": "node",
+        "module": "esnext",
+        "lib": ["es2015", "es2017"],
+        "sourceMap": true,
+        "declaration": true,
+        "declarationDir": "../../types",
+        "emitDeclarationOnly": true,
+        "rootDir": "../../src"
+    },
+    "files": [
+        "../../src/main.ts",
+        "../../src/Plugins/BodyParser/main.ts",
+        "../../src/Plugins/Joi/main.ts"
+    ]
+} 

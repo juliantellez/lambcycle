@@ -1,10 +1,11 @@
-.nvmrc
-.travis.yml
-.vscode
 /.github
-tsconfig.json
+/.nyc_output
+/.vscode
 /assets
 /config
-/.nyc_output
 /coverage
+/examples
 /src
+.nvmrc
+.travis.yml
+tsconfig.json
