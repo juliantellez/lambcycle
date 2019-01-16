@@ -9,7 +9,7 @@
     "url": "https://github.com/juliantellez/lambcycle"
   },
   "main": "dist/main.js",
-  "types": "./types/index.d.ts",
+  "types": "./types/main.d.ts",
   "scripts": {
     "prepush": "sh config/husky/prepush.sh",
     "fmt": "prettier --config config/prettier/.prettierrc '**/*.ts' -l",
