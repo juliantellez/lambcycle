@@ -74,6 +74,7 @@
  - [Plugins](#plugins)
  - [Creating a Plugin](#creating-a-plugin)
  - [Using a Plugin](#using-a-plugin)
+ - [DevX](#devx)
  - [About the project](#about-the-project)
  - [Contributing](#contributing)
  - [License](#license)
@@ -241,6 +242,13 @@ const handler = lambcycle(myApplicationLogic)
 
 export default handler;
 ```
+
+# DevX
+
+Lambcycle ships with type definitions, making the dev experience smoother 🚀 (VScode only).
+
+![typeintellisense](https://user-images.githubusercontent.com/4896851/51274743-db4db500-19c7-11e9-903c-cb50d127d933.gif)
+
 
 # About the project
 
