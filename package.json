@@ -9,6 +9,7 @@
     "url": "https://github.com/juliantellez/lambcycle"
   },
   "main": "dist/main.js",
+  "types": "./types/index.d.ts",
   "scripts": {
     "prepush": "sh config/husky/prepush.sh",
     "fmt": "prettier --config config/prettier/.prettierrc '**/*.ts' -l",
@@ -20,9 +21,10 @@
     "test:coverage": "nyc npm run test",
     "test:bundlesize": "bundlesize",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "build": "rm -rf dist && npm run build:dev && npm run build:prod",
+    "build": "rm -rf dist && npm run build:dev && npm run build:prod && npm run types",
     "build:prod": "webpack --config config/webpack/webpack.config.ts --env.production",
-    "build:dev": "webpack --config config/webpack/webpack.config.ts"
+    "build:dev": "webpack --config config/webpack/webpack.config.ts",
+    "types": "rm -rf types && tsc -p config/typescript/tsconfig.types.json"
   },
   "nyc": {
     "extends": "config/nyc/nycrc.json"
