@@ -472,7 +472,7 @@ describe('Middleware', () => {
                 ]);
 
                 let counter = 0;
-                await wrapper({}, contextMock, e => {
+                await wrapper({}, contextMock, () => {
                     counter += 1;
 
                     const value = counter;
@@ -525,7 +525,7 @@ describe('Middleware', () => {
                     loggerPlugin
                 ]);
 
-                await wrapper({}, contextMock, e => {
+                await wrapper({}, contextMock, () => {
                     const value = counter;
                     const expected = 2;
 
@@ -865,7 +865,7 @@ describe('Middleware', () => {
                     pluginManifest
                 ]);
 
-                await wrapper({}, contextMock, (error, data) => {
+                await wrapper({}, contextMock, (_, data) => {
                     const value = data;
                     const expected = response;
 

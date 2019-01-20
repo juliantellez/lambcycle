@@ -1,6 +1,5 @@
 import { Callback } from 'aws-lambda';
 
-import PluginType from '../Constants/PluginType';
 import IWrapper from '../Interfaces/IWrapper';
 
 import executePlugin from './executePlugin';
