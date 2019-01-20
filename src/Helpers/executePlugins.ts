@@ -9,10 +9,10 @@ const executePlugins = async (
     lifeCyclePlugins: any[],
     wrapper: IWrapper,
     handleError: Callback,
-    pluginType?: string
+    assertError: boolean = false
 ) => {
     for (const index in lifeCyclePlugins) {
-        if (pluginType !== PluginType.ERROR && wrapper.error) return;
+        if (!assertError && wrapper.error) return;
 
         await executePlugin(lifeCyclePlugins[index], wrapper, handleError);
     }

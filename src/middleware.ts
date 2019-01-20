@@ -5,7 +5,6 @@ import {
     EventLifeCycle,
     PluginLifeCycleHooks
 } from './Constants/PluginLifeCycle';
-import PluginType from './Constants/PluginType';
 import executeHandler from './Helpers/executeHandler';
 import executePlugins from './Helpers/executePlugins';
 import ILambdaHandler from './Interfaces/ILambdaHandler';
@@ -17,6 +16,7 @@ import callOnce from './Utils/callOnce';
 import createError from './Utils/createError';
 
 const evenLifeCycleList = Object['values'](EventLifeCycle);
+const ASSERT_ERROR = true;
 
 const middleware = (lambdaHandler: ILambdaHandler) => {
     const plugins: ILifeCyclePlugins = {
@@ -116,7 +116,7 @@ const middleware = (lambdaHandler: ILambdaHandler) => {
                     wrapper.plugins.onError,
                     wrapper,
                     pluginError => lambdaCallbackOnce(pluginError),
-                    PluginType.ERROR
+                    ASSERT_ERROR
                 );
 
                 wrapper.hasHandledError = true;
@@ -140,7 +140,7 @@ const middleware = (lambdaHandler: ILambdaHandler) => {
                 wrapper.plugins.onPreResponse,
                 wrapper,
                 errorHandler,
-                PluginType.ERROR
+                ASSERT_ERROR
             );
 
             executeLambdaCallback();
