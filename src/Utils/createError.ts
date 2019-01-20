@@ -1,7 +1,7 @@
 interface IError {
     type: string;
     source?: Error;
-    details?: string | string[];
+    details?: any;
 }
 
 const createError = (errorEvent: IError) => {
