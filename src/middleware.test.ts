@@ -522,14 +522,14 @@ describe('Middleware', () => {
                 };
 
                 const funcHandler = () => {
-                    throw handlerError
+                    throw handlerError;
                 };
 
                 const wrapper = lambcycle(funcHandler).register([
                     pluginManifest
                 ]);
 
-                await wrapper({}, contextMock, (error) => {
+                await wrapper({}, contextMock, error => {
                     const value = error;
                     const expected = pluginError;
                     assert.deepEqual(value, expected);
@@ -549,14 +549,14 @@ describe('Middleware', () => {
                 };
 
                 const funcHandler = () => {
-                    throw handlerError
+                    throw handlerError;
                 };
 
                 const wrapper = lambcycle(funcHandler).register([
                     pluginManifest
                 ]);
 
-                await wrapper({}, contextMock, (error) => {
+                await wrapper({}, contextMock, error => {
                     const value = error;
                     const expected = pluginError;
                     assert.deepEqual(value, expected);

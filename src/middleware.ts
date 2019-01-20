@@ -86,7 +86,7 @@ const middleware = (lambdaHandler: ILambdaHandler) => {
             wrapper.context = lambdaContext;
             wrapper.error = null;
             wrapper.response = null;
-            const lambdaCallbackOnce = callOnce(lambdaCallback)
+            const lambdaCallbackOnce = callOnce(lambdaCallback);
 
             const executeLambdaCallback = () => {
                 if (wrapper.response) {
