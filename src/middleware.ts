@@ -2,11 +2,9 @@ import { Callback, Context } from 'aws-lambda';
 
 import ErrorTypes from './Constants/ErrorTypes';
 import {
-    PluginLifeCycleHooks,
-    PostHandlerLifeCycleHooks,
-    PreHandlerLifeCycleHooks
+    EventLifeCycle,
+    PluginLifeCycleHooks
 } from './Constants/PluginLifeCycle';
-import PluginType from './Constants/PluginType';
 import executeHandler from './Helpers/executeHandler';
 import executePlugins from './Helpers/executePlugins';
 import ILambdaHandler from './Interfaces/ILambdaHandler';
@@ -17,13 +15,12 @@ import IWrapper from './Interfaces/IWrapper';
 import callOnce from './Utils/callOnce';
 import createError from './Utils/createError';
 
-const preHandlerHookList = Object['values'](PreHandlerLifeCycleHooks);
-const postHandlerHookList = Object['values'](PostHandlerLifeCycleHooks);
+const evenLifeCycleList = Object['values'](EventLifeCycle);
+const ASSERT_ERROR = true;
 
 const middleware = (lambdaHandler: ILambdaHandler) => {
     const plugins: ILifeCyclePlugins = {
         onRequest: [],
-        onAuth: [],
         onPreHandler: [],
         onPostHandler: [],
         onPreResponse: [],
@@ -89,43 +86,64 @@ const middleware = (lambdaHandler: ILambdaHandler) => {
             wrapper.context = lambdaContext;
             wrapper.error = null;
             wrapper.response = null;
+            const lambdaCallbackOnce = callOnce(lambdaCallback);
 
-            const executeLambdaCallback = callOnce(() =>
-                lambdaCallback(wrapper.error, wrapper.response)
-            );
+            const executeLambdaCallback = () => {
+                if (wrapper.response) {
+                    lambdaCallbackOnce(null, wrapper.response);
+                } else {
+                    const error = wrapper.hasHandledError
+                        ? createError({
+                              type: ErrorTypes.ERROR_HANDLER,
+                              details: {
+                                  description:
+                                      'Error handled, but no response has been supplied',
+                                  error: wrapper.error
+                              }
+                          })
+                        : wrapper.error;
+
+                    lambdaCallbackOnce(error);
+                }
+            };
 
             const errorHandler: Callback = callOnce(async (error: Error) => {
                 wrapper.error = error;
 
+                if (!wrapper.plugins.onError.length) return;
+
                 await executePlugins(
                     wrapper.plugins.onError,
                     wrapper,
-                    lambdaCallback,
-                    PluginType.ERROR
+                    pluginError => lambdaCallbackOnce(pluginError),
+                    ASSERT_ERROR
                 );
 
-                return executeLambdaCallback();
+                wrapper.hasHandledError = true;
             });
 
-            for (const index in preHandlerHookList) {
-                await executePlugins(
-                    wrapper.plugins[preHandlerHookList[index]],
-                    wrapper,
-                    errorHandler
-                );
+            for (const index in evenLifeCycleList) {
+                const cycle = evenLifeCycleList[index];
+
+                if (cycle === EventLifeCycle.ON_HANDLER) {
+                    await executeHandler(lambdaHandler, wrapper, errorHandler);
+                } else {
+                    await executePlugins(
+                        wrapper.plugins[cycle],
+                        wrapper,
+                        errorHandler
+                    );
+                }
             }
 
-            await executeHandler(lambdaHandler, wrapper, errorHandler);
+            await executePlugins(
+                wrapper.plugins.onPreResponse,
+                wrapper,
+                errorHandler,
+                ASSERT_ERROR
+            );
 
-            for (const index in postHandlerHookList) {
-                await executePlugins(
-                    wrapper.plugins[postHandlerHookList[index]],
-                    wrapper,
-                    errorHandler
-                );
-            }
-
-            return executeLambdaCallback();
+            executeLambdaCallback();
         }
     );
 

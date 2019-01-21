@@ -9,7 +9,6 @@ HandlerWrapper.event = {};
 HandlerWrapper.callback = () => null;
 HandlerWrapper.plugins = {
     onRequest: [],
-    onAuth: [],
     onPreHandler: [],
     onPostHandler: [],
     onPreResponse: [],
@@ -17,6 +16,7 @@ HandlerWrapper.plugins = {
 };
 HandlerWrapper.register = () => HandlerWrapper;
 HandlerWrapper.error = void 0;
+HandlerWrapper.hasHandledError = void 0;
 HandlerWrapper.response = void 0;
 
 export default HandlerWrapper;

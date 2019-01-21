@@ -9,6 +9,7 @@
     "url": "https://github.com/juliantellez/lambcycle"
   },
   "main": "dist/main.js",
+  "types": "./types/main.d.ts",
   "scripts": {
     "prepush": "sh config/husky/prepush.sh",
     "fmt": "prettier --config config/prettier/.prettierrc '**/*.ts' -l",
@@ -20,9 +21,10 @@
     "test:coverage": "nyc npm run test",
     "test:bundlesize": "bundlesize",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "build": "rm -rf dist && npm run build:dev && npm run build:prod",
+    "build": "rm -rf dist && npm run build:dev && npm run build:prod && npm run types",
     "build:prod": "webpack --config config/webpack/webpack.config.ts --env.production",
-    "build:dev": "webpack --config config/webpack/webpack.config.ts"
+    "build:dev": "webpack --config config/webpack/webpack.config.ts",
+    "types": "rm -rf types && tsc -p config/typescript/tsconfig.types.json"
   },
   "nyc": {
     "extends": "config/nyc/nycrc.json"
@@ -51,6 +53,8 @@
     "@types/joi": "^14.0.1",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.18",
+    "@types/sinon": "^7.0.4",
+    "@types/webpack": "^4.4.22",
     "aws-lambda": "^0.1.2",
     "bundlesize": "^0.17.0",
     "chai": "^4.2.0",
@@ -61,6 +65,7 @@
     "nyc": "^13.1.0",
     "peer-deps-externals-webpack-plugin": "^1.0.4",
     "prettier": "^1.15.3",
+    "sinon": "^7.2.3",
     "ts-loader": "^5.3.2",
     "ts-node": "^7.0.1",
     "tslint": "^5.12.0",

@@ -1,6 +1,11 @@
 import { Callback } from 'aws-lambda';
 import { assert } from 'chai';
+import { stub } from 'sinon';
 
+import {
+    EventLifeCycle,
+    PluginLifeCycleHooks
+} from './Constants/PluginLifeCycle';
 import ILambdaHandler from './Interfaces/ILambdaHandler';
 import IWrapper from './Interfaces/IWrapper';
 import lambcycle from './main';
@@ -18,6 +23,22 @@ describe('Middleware', () => {
 
             assert.property(wrapper, 'plugins');
             assert.property(wrapper, 'register');
+        });
+
+        it('should execute lambda callback', async () => {
+            const handlerResponse = {
+                foo: 'baz'
+            };
+            const funcHandler: ILambdaHandler = (_, __, callback) => {
+                callback(null, handlerResponse);
+            };
+
+            const wrapper = lambcycle(funcHandler);
+
+            const lambdaCallback = stub();
+            await wrapper({}, contextMock, lambdaCallback);
+
+            assert.isTrue(lambdaCallback.called);
         });
 
         it('should accept a callback type lambdaHandler', async () => {
@@ -60,9 +81,9 @@ describe('Middleware', () => {
             const handlerResponse = {
                 foo: 'baz'
             };
-            const funcHandler = () => {
-                return randomTimeout().then(() => handlerResponse);
-            };
+
+            const funcHandler = () =>
+                randomTimeout().then(() => handlerResponse);
 
             const wrapper = lambcycle(funcHandler);
 
@@ -97,6 +118,39 @@ describe('Middleware', () => {
                 assert.deepEqual(value, expected);
             });
         });
+
+        it('should communicate a response to the lambda callback', async () => {
+            const handlerResponse = {
+                foo: 'baz'
+            };
+            const funcHandler: ILambdaHandler = (_, __, callback) => {
+                callback(null, handlerResponse);
+            };
+
+            const wrapper = lambcycle(funcHandler);
+
+            const lambdaCallback = stub();
+            await wrapper({}, contextMock, lambdaCallback);
+
+            assert.isTrue(lambdaCallback.called);
+            assert.isTrue(lambdaCallback.calledWith(null, handlerResponse));
+        });
+
+        it('should communicate errors to the lambda callback', async () => {
+            const error = customError('foo');
+
+            const funcHandler: ILambdaHandler = () => {
+                throw error;
+            };
+
+            const wrapper = lambcycle(funcHandler);
+
+            const lambdaCallback = stub();
+            await wrapper({}, contextMock, lambdaCallback);
+
+            assert.isTrue(lambdaCallback.called);
+            assert.isTrue(lambdaCallback.calledWith(error));
+        });
     });
 
     describe('Plugins', () => {
@@ -105,7 +159,7 @@ describe('Middleware', () => {
 
             const pluginManifest = {
                 plugin: {
-                    onAuth: (_, config: object) => config
+                    onRequest: (_, config: object) => config
                 },
                 config: {
                     string: 'foo',
@@ -116,10 +170,10 @@ describe('Middleware', () => {
 
             const wrapper = lambcycle(funcHandler).register([pluginManifest]);
 
-            assert.lengthOf(wrapper.plugins.onAuth, 1);
+            assert.lengthOf(wrapper.plugins.onRequest, 1);
 
             const value = pluginManifest.config;
-            const expected: any = wrapper.plugins.onAuth[0](wrapper, {});
+            const expected: any = wrapper.plugins.onRequest[0](wrapper, {});
 
             assert.deepEqual(value, expected);
         });
@@ -130,34 +184,34 @@ describe('Middleware', () => {
             const pluginManifest = {
                 plugin: {
                     onRequest: () => {
-                        wrapperHook.push('onRequest');
-                    },
-                    onAuth: () => {
-                        wrapperHook.push('onAuth');
+                        wrapperHook.push(EventLifeCycle.ON_REQUEST);
                     },
                     onPreHandler: () => {
-                        wrapperHook.push('onPreHandler');
+                        wrapperHook.push(EventLifeCycle.ON_PRE_HANDLER);
                     },
                     onPostHandler: () => {
-                        wrapperHook.push('onPostHandler');
+                        wrapperHook.push(EventLifeCycle.ON_POST_HANDLER);
                     },
                     onPreResponse: () => {
-                        wrapperHook.push('onPreResponse');
+                        wrapperHook.push(PluginLifeCycleHooks.ON_PRE_RESPONSE);
                     }
                 }
             };
 
-            const funcHandler = () => null;
+            const funcHandler = () => {
+                return wrapperHook.push(EventLifeCycle.ON_HANDLER);
+            };
+
             const wrapper = lambcycle(funcHandler).register([pluginManifest]);
 
             await wrapper({}, contextMock, () => {
                 const value = wrapperHook;
                 const expected = [
-                    'onRequest',
-                    'onAuth',
-                    'onPreHandler',
-                    'onPostHandler',
-                    'onPreResponse'
+                    EventLifeCycle.ON_REQUEST,
+                    EventLifeCycle.ON_PRE_HANDLER,
+                    EventLifeCycle.ON_HANDLER,
+                    EventLifeCycle.ON_POST_HANDLER,
+                    PluginLifeCycleHooks.ON_PRE_RESPONSE
                 ];
 
                 assert.deepEqual(value, expected);
@@ -171,43 +225,42 @@ describe('Middleware', () => {
                 plugin: {
                     onRequest: async () => {
                         await randomTimeout(5);
-                        wrapperHook.push('onRequest');
-                    },
-                    onAuth: async () => {
-                        await randomTimeout(5);
-                        wrapperHook.push('onAuth');
+                        wrapperHook.push(EventLifeCycle.ON_REQUEST);
                     },
                     onPreHandler: () => {
                         return randomTimeout(5)
                             .then(() => randomTimeout(5))
                             .then(() => {
-                                wrapperHook.push('onPreHandler');
+                                wrapperHook.push(EventLifeCycle.ON_PRE_HANDLER);
 
                                 return randomTimeout(2);
                             });
                     },
                     onPostHandler: async () => {
                         await randomTimeout(2);
-                        wrapperHook.push('onPostHandler');
+                        wrapperHook.push(EventLifeCycle.ON_POST_HANDLER);
                     },
                     onPreResponse: async () => {
                         await randomTimeout(3);
-                        wrapperHook.push('onPreResponse');
+                        wrapperHook.push(PluginLifeCycleHooks.ON_PRE_RESPONSE);
                     }
                 }
             };
 
-            const funcHandler = () => null;
+            const funcHandler = () => {
+                return wrapperHook.push(EventLifeCycle.ON_HANDLER);
+            };
+
             const wrapper = lambcycle(funcHandler).register([pluginManifest]);
 
             await wrapper({}, contextMock, () => {
                 const value = wrapperHook;
                 const expected = [
-                    'onRequest',
-                    'onAuth',
-                    'onPreHandler',
-                    'onPostHandler',
-                    'onPreResponse'
+                    EventLifeCycle.ON_REQUEST,
+                    EventLifeCycle.ON_PRE_HANDLER,
+                    EventLifeCycle.ON_HANDLER,
+                    EventLifeCycle.ON_POST_HANDLER,
+                    PluginLifeCycleHooks.ON_PRE_RESPONSE
                 ];
 
                 assert.deepEqual(value, expected);
@@ -220,44 +273,43 @@ describe('Middleware', () => {
             const pluginManifest = {
                 plugin: {
                     onRequest: () => {
-                        wrapperHook.push('onRequest');
-                    },
-                    onAuth: async () => {
-                        await randomTimeout();
-                        wrapperHook.push('onAuth');
+                        wrapperHook.push(EventLifeCycle.ON_REQUEST);
                     },
                     onPreHandler: () => {
                         return randomTimeout()
                             .then(() => randomTimeout())
                             .then(() => {
-                                wrapperHook.push('onPreHandler');
+                                wrapperHook.push(EventLifeCycle.ON_PRE_HANDLER);
 
                                 return randomTimeout();
                             });
                     },
                     onPostHandler: async () => {
                         await randomTimeout();
-                        wrapperHook.push('onPostHandler');
+                        wrapperHook.push(EventLifeCycle.ON_POST_HANDLER);
                     },
                     onPreResponse: () => {
-                        wrapperHook.push('onPreResponse');
+                        wrapperHook.push(PluginLifeCycleHooks.ON_PRE_RESPONSE);
 
-                        return randomTimeout(15);
+                        return randomTimeout(5);
                     }
                 }
             };
 
-            const funcHandler = () => null;
+            const funcHandler = () => {
+                return wrapperHook.push(EventLifeCycle.ON_HANDLER);
+            };
+
             const wrapper = lambcycle(funcHandler).register([pluginManifest]);
 
             await wrapper({}, contextMock, () => {
                 const value = wrapperHook;
                 const expected = [
-                    'onRequest',
-                    'onAuth',
-                    'onPreHandler',
-                    'onPostHandler',
-                    'onPreResponse'
+                    EventLifeCycle.ON_REQUEST,
+                    EventLifeCycle.ON_PRE_HANDLER,
+                    EventLifeCycle.ON_HANDLER,
+                    EventLifeCycle.ON_POST_HANDLER,
+                    PluginLifeCycleHooks.ON_PRE_RESPONSE
                 ];
 
                 assert.deepEqual(value, expected);
@@ -288,6 +340,7 @@ describe('Middleware', () => {
         describe('Wrapper', () => {
             it('should catch async errors in handler', async () => {
                 const handlerError = customError('foo');
+
                 const funcHandler = async () => {
                     return await randomTimeout().then(() => {
                         throw handlerError;
@@ -307,7 +360,7 @@ describe('Middleware', () => {
             it('should catch promise errors in handler', async () => {
                 const handlerError = customError('foo');
                 const funcHandler = () => {
-                    return randomTimeout(100).then(() => {
+                    return randomTimeout(10).then(() => {
                         throw handlerError;
                     });
                 };
@@ -330,8 +383,8 @@ describe('Middleware', () => {
 
                 const wrapper = lambcycle(funcHandler);
 
-                await wrapper({}, contextMock, error => {
-                    const value = error;
+                await wrapper({}, contextMock, () => {
+                    const value = wrapper.error;
                     const expected = handlerError;
 
                     assert.deepEqual(value, expected);
@@ -346,8 +399,8 @@ describe('Middleware', () => {
 
                 const wrapper = lambcycle(funcHandler);
 
-                await wrapper({}, contextMock, error => {
-                    const value = error;
+                await wrapper({}, contextMock, () => {
+                    const value = wrapper.error;
                     const expected = handlerError;
 
                     assert.deepEqual(value, expected);
@@ -394,8 +447,6 @@ describe('Middleware', () => {
             });
 
             it('should call the lambdaCallback only once', async () => {
-                const error = customError('a');
-
                 const pluginManifest = {
                     plugin: {
                         onPreHandler: () => {
@@ -421,7 +472,7 @@ describe('Middleware', () => {
                 ]);
 
                 let counter = 0;
-                await wrapper({}, contextMock, e => {
+                await wrapper({}, contextMock, () => {
                     counter += 1;
 
                     const value = counter;
@@ -474,7 +525,7 @@ describe('Middleware', () => {
                     loggerPlugin
                 ]);
 
-                await wrapper({}, contextMock, e => {
+                await wrapper({}, contextMock, () => {
                     const value = counter;
                     const expected = 2;
 
@@ -500,6 +551,83 @@ describe('Middleware', () => {
                     pluginManifest
                 ]);
 
+                await wrapper({}, contextMock, () => {
+                    const value = wrapper.error;
+                    const expected = pluginError;
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('should mark errors as handled if an error plugin is invoked', async () => {
+                const pluginError = new Error('foo');
+
+                const pluginManifest = {
+                    plugin: {
+                        onRequest: (_, __, handleError: Callback) => {
+                            handleError(pluginError);
+                        },
+                        onError: stub()
+                    }
+                };
+
+                const funcHandler = () => null;
+                const wrapper = lambcycle(funcHandler).register([
+                    pluginManifest
+                ]);
+
+                await wrapper({}, contextMock, () => {
+                    assert.isTrue(wrapper.hasHandledError);
+                    assert.isTrue(pluginManifest.plugin.onError.called);
+                });
+            });
+
+            it('should allow error plugins to invoke the lambda callback', async () => {
+                const pluginError = new Error('foo');
+                const handlerError = new Error('baz');
+
+                const pluginManifest = {
+                    plugin: {
+                        onError: (_, __, handleError: Callback) => {
+                            handleError(pluginError);
+                        }
+                    }
+                };
+
+                const funcHandler = () => {
+                    throw handlerError;
+                };
+
+                const wrapper = lambcycle(funcHandler).register([
+                    pluginManifest
+                ]);
+
+                await wrapper({}, contextMock, error => {
+                    const value = error;
+                    const expected = pluginError;
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('should allow error plugins to throw errors', async () => {
+                const pluginError = new Error('foo');
+                const handlerError = new Error('baz');
+
+                const pluginManifest = {
+                    plugin: {
+                        onError: () => {
+                            throw pluginError;
+                        }
+                    }
+                };
+
+                const funcHandler = () => {
+                    throw handlerError;
+                };
+
+                const wrapper = lambcycle(funcHandler).register([
+                    pluginManifest
+                ]);
+
                 await wrapper({}, contextMock, error => {
                     const value = error;
                     const expected = pluginError;
@@ -515,7 +643,7 @@ describe('Middleware', () => {
                 const pluginManifest = {
                     plugin: {
                         onPreHandler: () => {
-                            return randomTimeout(10)
+                            return randomTimeout(5)
                                 .then(() => randomTimeout(10))
                                 .then(() => {
                                     throw errorValue[0];
@@ -542,6 +670,232 @@ describe('Middleware', () => {
                     const expected = errorExpected[0];
 
                     assert.deepEqual(value, expected);
+                });
+            });
+
+            it('[onRequest] should pass errors to lambda callback if no error plugins are present', async () => {
+                const errorValue = customError('foo');
+
+                const pluginManifest = {
+                    plugin: {
+                        onRequest: () => {
+                            return randomTimeout(10)
+                                .then(() => randomTimeout(10))
+                                .then(() => {
+                                    throw errorValue;
+                                });
+                        }
+                    }
+                };
+
+                const funcHandler = () => null;
+                const wrapper = lambcycle(funcHandler).register([
+                    pluginManifest
+                ]);
+
+                await wrapper({}, contextMock, error => {
+                    const value = error;
+                    const expected = errorValue;
+
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('[onPreHandler] should pass errors to lambda callback if no error plugins are present', async () => {
+                const errorValue = customError('foo');
+
+                const pluginManifest = {
+                    plugin: {
+                        onPreHandler: () => {
+                            return randomTimeout(10)
+                                .then(() => randomTimeout(10))
+                                .then(() => {
+                                    throw errorValue;
+                                });
+                        }
+                    }
+                };
+
+                const funcHandler = () => null;
+                const wrapper = lambcycle(funcHandler).register([
+                    pluginManifest
+                ]);
+
+                await wrapper({}, contextMock, error => {
+                    const value = error;
+                    const expected = errorValue;
+
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('[onHandler] should pass errors to lambda callback if no error plugins are present', async () => {
+                const errorValue = customError('foo');
+
+                const funcHandler = () => {
+                    return randomTimeout(10)
+                        .then(() => randomTimeout(10))
+                        .then(() => {
+                            throw errorValue;
+                        });
+                };
+
+                const wrapper = lambcycle(funcHandler);
+
+                await wrapper({}, contextMock, error => {
+                    const value = error;
+                    const expected = errorValue;
+
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('[onPostHandler] should pass errors to lambda callback if no error plugins are present', async () => {
+                const errorValue = customError('foo');
+
+                const pluginManifest = {
+                    plugin: {
+                        onPostHandler: () => {
+                            return randomTimeout(10)
+                                .then(() => randomTimeout(10))
+                                .then(() => {
+                                    throw errorValue;
+                                });
+                        }
+                    }
+                };
+
+                const funcHandler = () => null;
+                const wrapper = lambcycle(funcHandler).register([
+                    pluginManifest
+                ]);
+
+                await wrapper({}, contextMock, error => {
+                    const value = error;
+                    const expected = errorValue;
+
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('[onPreResponse] should pass errors to lambda callback if no error plugins are present', async () => {
+                const errorValue = customError('foo');
+
+                const pluginManifest = {
+                    plugin: {
+                        onPreResponse: () => {
+                            return randomTimeout(10)
+                                .then(() => randomTimeout(10))
+                                .then(() => {
+                                    throw errorValue;
+                                });
+                        }
+                    }
+                };
+
+                const funcHandler = () => null;
+                const wrapper = lambcycle(funcHandler).register([
+                    pluginManifest
+                ]);
+
+                await wrapper({}, contextMock, error => {
+                    const value = error;
+                    const expected = errorValue;
+
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('Pre response plugins should be called before the lambda callback', async () => {
+                const response = {
+                    status: 0,
+                    body: 'foo'
+                };
+
+                const pluginManifest = {
+                    plugin: {
+                        onPreResponse: handler => {
+                            handler.response = response;
+                        }
+                    }
+                };
+
+                const funcHandler = () => null;
+                const wrapper = lambcycle(funcHandler).register([
+                    pluginManifest
+                ]);
+
+                await wrapper({}, contextMock, (_, data) => {
+                    const value = data;
+                    const expected = response;
+
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('Pre response plugins should be called before the lambda callback on error', async () => {
+                const errorValue = customError('foo');
+                const response = {
+                    status: 0,
+                    body: 'foo'
+                };
+
+                const pluginManifest = {
+                    plugin: {
+                        onRequest: () => {
+                            return randomTimeout(10)
+                                .then(() => randomTimeout(10))
+                                .then(() => {
+                                    throw errorValue;
+                                });
+                        },
+                        onPreResponse: handler => {
+                            const value = handler.error;
+                            const expected = errorValue;
+
+                            assert.deepEqual(value, expected);
+
+                            handler.response = response;
+                        }
+                    }
+                };
+
+                const funcHandler = () => null;
+                const wrapper = lambcycle(funcHandler).register([
+                    pluginManifest
+                ]);
+
+                await wrapper({}, contextMock, (_, data) => {
+                    const value = data;
+                    const expected = response;
+
+                    assert.deepEqual(value, expected);
+                });
+            });
+
+            it('should not call other lifecycle plugins on Error', async () => {
+                const errorValue = customError('foo');
+
+                const pluginManifest = {
+                    plugin: {
+                        onRequest: () => {
+                            throw errorValue;
+                        },
+                        onPreHandler: stub(),
+                        onPostHandler: stub()
+                    }
+                };
+
+                const funcHandler = stub();
+
+                const wrapper = lambcycle(funcHandler).register([
+                    pluginManifest
+                ]);
+
+                await wrapper({}, contextMock, () => {
+                    assert.isFalse(pluginManifest.plugin.onPreHandler.called);
+                    assert.isFalse(pluginManifest.plugin.onPostHandler.called);
+                    assert.isFalse(funcHandler.called);
                 });
             });
         });

@@ -74,6 +74,7 @@
  - [Plugins](#plugins)
  - [Creating a Plugin](#creating-a-plugin)
  - [Using a Plugin](#using-a-plugin)
+ - [DevX](#devx)
  - [About the project](#about-the-project)
  - [Contributing](#contributing)
  - [License](#license)
@@ -93,7 +94,7 @@ yarn add lambcycle
 Lambcycle is a middleware for lambda functions. It defines a configurable life-cycle and allows you to focus on your application's logic. It has a "Feature as Plugin" approach, so you can easily create your own plugins or reuse your favorite packages with very little effort 🐑 🛵.
 
 Checkout the following example or follow the link to
-[🎉 see some actual code 🎉 ](https://github.com/juliantellez/lambcycle/tree/master/examples).
+[🎉 see some actual code 🎉 ](https://github.com/juliantellez/lambcycle/tree/develop/examples).
 
 
 ```javascript
@@ -139,7 +140,7 @@ export default handler;
 The lifecycle provides a clear guideline to reason about your needs. Every step of the cycle can handle or throw errors making it easy to log, report or debug.
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/juliantellez/lambcycle/master/assets/lifecycle.svg?sanitize=true" height=500>
+<img src="https://raw.githubusercontent.com/juliantellez/lambcycle/develop/assets/lifecycle.svg?sanitize=true" height=500>
 </p>
 
 # Error Handling
@@ -241,6 +242,13 @@ const handler = lambcycle(myApplicationLogic)
 
 export default handler;
 ```
+
+# DevX
+
+Lambcycle ships with type definitions, making the dev experience smoother 🚀 (VScode only).
+
+![typeintellisense](https://user-images.githubusercontent.com/4896851/51274743-db4db500-19c7-11e9-903c-cb50d127d933.gif)
+
 
 # About the project
 

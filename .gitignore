@@ -1,6 +1,9 @@
-dist
-coverage
-.nyc_output
+/.nyc_output
+/.vscode
+
+/coverage
+/dist
+/node_modules
+/types
 
 !package-lock.json
-node_modules

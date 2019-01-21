@@ -14,6 +14,7 @@ interface IWrapper {
     plugins: ILifeCyclePlugins;
     event: any;
     error: any;
+    hasHandledError: any;
     response: any;
     register(plugins: IPluginManifest[]): IWrapper;
 }
