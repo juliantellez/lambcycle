@@ -42,7 +42,7 @@ describe('Plugin: bodyParser', () => {
             body: JSON.stringify(body)
         };
 
-        const lambdaCallback = (err, response) => {
+        const lambdaCallback = (_, response) => {
             const value = response;
             const expected = body;
 

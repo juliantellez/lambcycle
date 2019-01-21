@@ -48,6 +48,7 @@
         "quotemark": [true, "single"],
         "radix": false,
         "typedef": [true, "call-signature"],
-        "typedef-whitespace": false
+        "typedef-whitespace": false,
+        "no-unused-variable": true
     }
 }

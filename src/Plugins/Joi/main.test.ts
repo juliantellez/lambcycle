@@ -2,7 +2,6 @@ import { assert } from 'chai';
 import * as Joi from 'joi';
 
 import ILambdaHandler from '../../Interfaces/ILambdaHandler';
-import IWrapper from '../../Interfaces/IWrapper';
 import lambcycle from '../../main';
 import contextMock from '../../Mocks/Lambda/Context';
 
@@ -15,7 +14,7 @@ interface IContext {
 
 describe('Plugin: Joi', () => {
     const context: IContext = {
-        handler: event => null
+        handler: () => null
     };
 
     it('should validate request from schema', async () => {

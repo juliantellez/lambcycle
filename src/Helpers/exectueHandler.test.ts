@@ -53,7 +53,7 @@ describe('ExecuteHandler', () => {
         const response = {
             foo: 'gizmo'
         };
-        const lambdaHandler = (event, context, callback) => {
+        const lambdaHandler = (_, __, callback) => {
             randomTimeout().then(() => callback(null, response));
         };
 
