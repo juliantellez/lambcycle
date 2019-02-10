@@ -15,7 +15,7 @@ import IWrapper from './Interfaces/IWrapper';
 import callOnce from './Utils/callOnce';
 import createError from './Utils/createError';
 
-const evenLifeCycleList = Object['values'](EventLifeCycle);
+const eventLifeCycleList = Object['values'](EventLifeCycle);
 const ASSERT_ERROR = true;
 
 const middleware = (lambdaHandler: ILambdaHandler) => {
@@ -122,8 +122,8 @@ const middleware = (lambdaHandler: ILambdaHandler) => {
                 wrapper.hasHandledError = true;
             });
 
-            for (const index in evenLifeCycleList) {
-                const cycle = evenLifeCycleList[index];
+            for (const index in eventLifeCycleList) {
+                const cycle = eventLifeCycleList[index];
 
                 if (cycle === EventLifeCycle.ON_HANDLER) {
                     await executeHandler(lambdaHandler, wrapper, errorHandler);
