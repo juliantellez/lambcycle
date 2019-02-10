@@ -1,6 +1,6 @@
 {
   "name": "lambcycle",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "MIT",
   "author": "Julian Tellez",
   "description": "🐑 🛵 A declarative lambda middleware with life cycle hooks 🐑 🛵",
@@ -67,7 +67,7 @@
     "prettier": "^1.15.3",
     "sinon": "^7.2.3",
     "ts-loader": "^5.3.2",
-    "ts-node": "^7.0.1",
+    "ts-node": "^8.0.1",
     "tslint": "^5.12.0",
     "tslint-eslint-rules": "^5.4.0",
     "typescript": "^3.2.2",
