@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  Read the introductory blog post <a href="https://medium.com/dazn-tech/handling-complexity-in-lambda-functions-e7acfbeb920a" target="_blank">here</a>.
+  🐑🛵 Read the introductory blog post <a href="https://medium.com/dazn-tech/handling-complexity-in-lambda-functions-e7acfbeb920a" target="_blank">here</a> 🐑🛵.
 </p>
 
 <!---links--->
