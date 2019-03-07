@@ -8,6 +8,10 @@
   Lambcycle is a declarative <a href="https://aws.amazon.com/lambda/" target="_blank">lambda</a> middleware. Its main purpose is to let you focus on the specifics of your application by providing a configuration cycle.
 </p>
 
+<p align="center">
+  Read the introductory blog post <a href="https://medium.com/dazn-tech/handling-complexity-in-lambda-functions-e7acfbeb920a" target="_blank">here</a>.
+</p>
+
 <!---links--->
 
 <p align="center">
@@ -140,11 +144,26 @@ export default handler;
 The lifecycle provides a clear guideline to reason about your needs. Every step of the cycle can handle or throw errors making it easy to log, report or debug.
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/juliantellez/lambcycle/develop/assets/lifecycle.svg?sanitize=true" height=500>
+<img src="./assets/lambcycle-lifecycle.png" height=500>
 </p>
 
+Lambcycle enhances lambda functions with a few extension points (see graph), each of which can be used to interact with the event in a decomposed manner.
+
+- The first extension point is `Request` which occurs immediately after the lambda is called. You can use this step for parsing, validation, etc...
+Note: If you are thinking of auth, please consider a [lambda authoriser](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html) instead.
+
+- The `Pre Handler` extension comes in handy when you need to adapt data to fit an interface. It is also a great place for fetching secrets.
+
+- The `Handler`, where your beautiful business logic lives.
+
+- Next up is the `Post Handler`, use this extension to validate and/or cache the output of your business logic.
+
+- `Error` is an implicit extension for logging and tracing.
+
+- And finally `Pre Response`, your chance to format a response to the consumer (which could be data or an error).
+
 # Error Handling
-As you can see from the lifecycle graph above, the error object is a first class citizen that will stop the cycle and execute any error plugins declared in the register, it will then proceed to call the lambda handler's callback.
+The error object is a first class citizen that will stop the cycle and execute any error plugins declared in the register, it will then proceed to call the lambda handler's callback.
 Have a look at the [Wrapper Interface](https://github.com/juliantellez/lambcycle/blob/master/src/Interfaces/IWrapper.ts) to see what's available for reporting.
 
 `HINT: pretty much everything.`
