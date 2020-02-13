@@ -55,7 +55,7 @@
     "@types/node": "^11.9.4",
     "@types/sinon": "^7.0.4",
     "@types/webpack": "^4.4.22",
-    "aws-lambda": "^0.1.2",
+    "aws-lambda": "^1.0.5",
     "bundlesize": "^0.17.0",
     "chai": "^4.2.0",
     "coveralls": "^3.0.2",
